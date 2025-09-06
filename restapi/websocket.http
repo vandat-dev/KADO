@@ -1,0 +1,25 @@
+Connection
+# Note: Use WebSocket client to connect to this endpoint
+# ws://localhost:8386/v1/ws?user_id=user123
+
+### Broadcast Message to All Users
+POST http://localhost:8386/v1/ws/broadcast
+Content-Type: application/json
+
+{
+  "message": "Hello everyone!",
+  "sender": "admin"
+}
+
+### Send Message to Specific User
+POST http://localhost:8386/v1/ws/send/user123
+Content-Type: application/json
+
+{
+  "message": "Hello user123!",
+  "sender": "admin",
+  "type": "notification"
+}
+
+### Get Online Users
+GET http://localhost:8386/v1/ws/online
