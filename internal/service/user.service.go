@@ -5,7 +5,6 @@ import (
 	"base_go_be/internal/dto"
 	"base_go_be/internal/model"
 	"base_go_be/internal/repo"
-	"base_go_be/pkg/config"
 	"base_go_be/pkg/jwt"
 	"base_go_be/pkg/response"
 
@@ -15,7 +14,7 @@ import (
 type IUserService interface {
 	GetUserByID(id uint) *response.ServiceResult
 	GetListUser(req dto.UserListRequestDto, userRole string) *response.ServiceResult
-	CreateUser(email string, username string, password string, role string) *response.ServiceResult
+	CreateUser(userDto dto.UserRequestDto) *response.ServiceResult
 	UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *response.ServiceResult
 	Login(email string, password string) *response.ServiceResult
 	Register(registerDto dto.RegisterRequestDto) *response.ServiceResult
@@ -35,10 +34,17 @@ func (us *userService) GetUserByID(id uint) *response.ServiceResult {
 		return response.NewServiceErrorWithCode(422, response.ErrCodeUserNotFound)
 	}
 	userResponse := dto.UserResponseDto{
-		Id:       result.ID,
-		Email:    result.Email,
-		Username: result.Username,
-		Role:     result.Role,
+		Id:          result.ID,
+		Email:       result.Email,
+		Username:    result.Username,
+		FullName:    result.FullName,
+		PhoneNumber: result.PhoneNumber,
+		Gender:      result.Gender,
+		Address:     result.Address,
+		SystemRole:  result.SystemRole,
+		IsActive:    result.IsActive,
+		CreatedAt:   result.CreatedAt,
+		UpdatedAt:   result.UpdatedAt,
 	}
 	return response.NewServiceResult(&userResponse)
 }
@@ -56,41 +62,57 @@ func (us *userService) GetListUser(req dto.UserListRequestDto, userRole string) 
 	}
 
 	// Convert to DTOs
-	userDTOs := make([]dto.UserResponseDto, 0, len(users))
-	for _, u := range users {
-		userDTOs = append(userDTOs, dto.UserResponseDto{
-			Id:       u.ID,
-			Email:    u.Email,
-			Username: u.Username,
-			Role:     u.Role,
-		})
-	}
-
-	result := &dto.UserListResponseDto{
-		Data:  userDTOs,
-		Total: total,
+	//userDTOs := make([]dto.UserResponseDto, 0, len(users))
+	//for _, u := range users {
+	//	userDTOs = append(userDTOs, dto.UserResponseDto{
+	//		Id:          u.ID,
+	//		Email:       u.Email,
+	//		Username:    u.Username,
+	//		FullName:    u.FullName,
+	//		PhoneNumber: u.PhoneNumber,
+	//		Gender:      u.Gender,
+	//		Address:     u.Address,
+	//		SystemRole:  u.SystemRole,
+	//		IsActive:    u.IsActive,
+	//		CreatedAt:   u.CreatedAt,
+	//		UpdatedAt:   u.UpdatedAt,
+	//	})
+	//}
+	//
+	//result := &dto.UserListResponseDto{
+	//	Data:  userDTOs,
+	//	Total: total,
+	//}
+	result := map[string]interface{}{
+		"total": total,
+		"data":  users,
 	}
 	return response.NewServiceResult(result)
 }
 
-func (us *userService) CreateUser(email string, username string, password string, role string) *response.ServiceResult {
+func (us *userService) CreateUser(userDto dto.UserRequestDto) *response.ServiceResult {
 
-	existingUser := us.userRepo.GetUserByEmail(email)
+	existingUser := us.userRepo.GetUserByEmail(userDto.Email)
 	if existingUser != nil {
 		return response.NewServiceErrorWithCode(409, response.ErrCodeUserHasExists)
 	}
 
 	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userDto.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
 
 	user := &model.User{
-		Email:    email,
-		Username: username,
-		Password: string(hashedPassword),
-		Role:     role,
+		Email:       userDto.Email,
+		Username:    userDto.Username,
+		FullName:    userDto.FullName,
+		Password:    string(hashedPassword),
+		PhoneNumber: userDto.PhoneNumber,
+		Gender:      userDto.Gender,
+		Address:     userDto.Address,
+		SystemRole:  userDto.SystemRole,
+		IsActive:    true,
 	}
 
 	userID, err := us.userRepo.CreateUser(user)
@@ -112,8 +134,23 @@ func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *
 	if updateDto.Username != "" {
 		updateUser.Username = updateDto.Username
 	}
-	if updateDto.Role != "" {
-		updateUser.Role = updateDto.Role
+	if updateDto.FullName != "" {
+		updateUser.FullName = updateDto.FullName
+	}
+	if updateDto.PhoneNumber != "" {
+		updateUser.PhoneNumber = updateDto.PhoneNumber
+	}
+	if updateDto.Gender != "" {
+		updateUser.Gender = updateDto.Gender
+	}
+	if updateDto.Address != "" {
+		updateUser.Address = updateDto.Address
+	}
+	if updateDto.SystemRole != "" {
+		updateUser.SystemRole = updateDto.SystemRole
+	}
+	if updateDto.IsActive != nil {
+		updateUser.IsActive = *updateDto.IsActive
 	}
 
 	if updateDto.Password != "" {
@@ -130,10 +167,17 @@ func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *
 	}
 
 	userResponse := dto.UserResponseDto{
-		Id:       updatedUser.ID,
-		Email:    updatedUser.Email,
-		Username: updatedUser.Username,
-		Role:     updatedUser.Role,
+		Id:          updatedUser.ID,
+		Email:       updatedUser.Email,
+		Username:    updatedUser.Username,
+		FullName:    updatedUser.FullName,
+		PhoneNumber: updatedUser.PhoneNumber,
+		Gender:      updatedUser.Gender,
+		Address:     updatedUser.Address,
+		SystemRole:  updatedUser.SystemRole,
+		IsActive:    updatedUser.IsActive,
+		CreatedAt:   updatedUser.CreatedAt,
+		UpdatedAt:   updatedUser.UpdatedAt,
 	}
 
 	return response.NewServiceResult(&userResponse)
@@ -152,13 +196,13 @@ func (us *userService) Login(email string, password string) *response.ServiceRes
 	}
 
 	// Generate JWT token
-	token, err := jwt.GenerateToken(user.ID, user.Email, user.Role, config.JWT.SecretKey, config.JWT.TokenExpiry)
+	token, err := jwt.GenerateToken(user.ID, user.Email, user.SystemRole, global.Config.JWT.SecretKey, global.Config.JWT.TokenExpiry)
 	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
 
 	// Generate refresh token with longer expiry
-	refreshToken, err := jwt.GenerateToken(user.ID, user.Email, user.Role, config.JWT.SecretKey, config.JWT.RefreshExpiry)
+	refreshToken, err := jwt.GenerateToken(user.ID, user.Email, user.SystemRole, global.Config.JWT.SecretKey, global.Config.JWT.RefreshExpiry)
 	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
@@ -166,19 +210,19 @@ func (us *userService) Login(email string, password string) *response.ServiceRes
 	authResponse := &dto.AuthResponseDto{
 		Token:        token,
 		RefreshToken: refreshToken,
-		User: dto.UserResponseDto{
-			Id:       user.ID,
-			Email:    user.Email,
-			Username: user.Username,
-			Role:     user.Role,
-		},
 	}
 
 	return response.NewServiceResult(authResponse)
 }
 
 func (us *userService) Register(registerDto dto.RegisterRequestDto) *response.ServiceResult {
-	createResult := us.CreateUser(registerDto.Email, registerDto.Username, registerDto.Password, registerDto.Role)
+	userDto := dto.UserRequestDto{
+		Email:      registerDto.Email,
+		Username:   registerDto.Username,
+		Password:   registerDto.Password,
+		SystemRole: registerDto.Role,
+	}
+	createResult := us.CreateUser(userDto)
 	if createResult.Error != nil {
 		return createResult // Return CreateUser
 	}
@@ -190,13 +234,13 @@ func (us *userService) Register(registerDto dto.RegisterRequestDto) *response.Se
 	}
 
 	// Generate JWT token
-	token, err := jwt.GenerateToken(user.ID, user.Email, user.Role, config.JWT.SecretKey, config.JWT.TokenExpiry)
+	token, err := jwt.GenerateToken(user.ID, user.Email, user.SystemRole, global.Config.JWT.SecretKey, global.Config.JWT.TokenExpiry)
 	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
 
 	// Generate refresh token with longer expiry
-	refreshToken, err := jwt.GenerateToken(user.ID, user.Email, user.Role, config.JWT.SecretKey, config.JWT.RefreshExpiry)
+	refreshToken, err := jwt.GenerateToken(user.ID, user.Email, user.SystemRole, global.Config.JWT.SecretKey, global.Config.JWT.RefreshExpiry)
 	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
@@ -204,12 +248,6 @@ func (us *userService) Register(registerDto dto.RegisterRequestDto) *response.Se
 	authResponse := &dto.AuthResponseDto{
 		Token:        token,
 		RefreshToken: refreshToken,
-		User: dto.UserResponseDto{
-			Id:       user.ID,
-			Email:    user.Email,
-			Username: user.Username,
-			Role:     user.Role,
-		},
 	}
 
 	return response.NewServiceResult(authResponse)

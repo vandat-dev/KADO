@@ -1,6 +1,9 @@
 package main
 
-import "base_go_be/internal/initialize"
+import (
+	"base_go_be/internal/initialize"
+	_ "encoding/json" // Import for swag to recognize json.RawMessage
+)
 
 // @title Go API
 // @version 1.0
@@ -8,7 +11,7 @@ import "base_go_be/internal/initialize"
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
-// @host localhost:8386
+// @host 10.2.21.86:8386
 // @BasePath /v1
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header

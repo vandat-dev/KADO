@@ -13,18 +13,18 @@ var (
 )
 
 type JWTClaims struct {
-	UserID uint   `json:"user_id"`
-	Email  string `json:"email"`
-	Role   string `json:"role"`
+	UserID     uint   `json:"user_id"`
+	Email      string `json:"email"`
+	SystemRole string `json:"system_role"`
 	jwt.RegisteredClaims
 }
 
-// Generate JWT token
+// GenerateToken Generate JWT token
 func GenerateToken(userID uint, email, role string, secretKey string, expireTime time.Duration) (string, error) {
 	claims := JWTClaims{
-		UserID: userID,
-		Email:  email,
-		Role:   role,
+		UserID:     userID,
+		Email:      email,
+		SystemRole: role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expireTime)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -40,7 +40,7 @@ func GenerateToken(userID uint, email, role string, secretKey string, expireTime
 	return tokenString, nil
 }
 
-// Parse and validate JWT token
+// ValidateToken Parse and validate JWT token
 func ValidateToken(tokenString, secretKey string) (*JWTClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretKey), nil

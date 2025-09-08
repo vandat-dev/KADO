@@ -5,6 +5,8 @@ go.sum
 tests/__pycache__/
 tests/*.pyc
 
+server
+
 .env
 .venv/
 .vscode/

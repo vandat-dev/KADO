@@ -12,13 +12,49 @@ import (
 	"base_go_be/internal/service"
 )
 
-// Injectors from product.wire.go:
+// Injectors from client.wire.go:
 
-func InitProductRouterHandler() (*controller.ProductController, error) {
-	iProductRepository := repo.NewProductRepository()
-	iProductService := service.NewProductService(iProductRepository)
-	productController := controller.NewProductController(iProductService)
-	return productController, nil
+func InitClientRouterHandler() (*controller.ClientController, error) {
+	iClientRepository := repo.NewClientRepository()
+	iClientService := service.NewClientService(iClientRepository)
+	clientController := controller.NewClientController(iClientService)
+	return clientController, nil
+}
+
+// Injectors from item.wire.go:
+
+func InitItemRouterHandler() (*controller.ItemController, error) {
+	iItemRepository := repo.NewItemRepository()
+	iItemService := service.NewItemService(iItemRepository)
+	itemController := controller.NewItemController(iItemService)
+	return itemController, nil
+}
+
+// Injectors from job.wire.go:
+
+func InitJobRouterHandler() (*controller.JobController, error) {
+	iJobRepository := repo.NewJobRepository()
+	iJobService := service.NewJobService(iJobRepository)
+	jobController := controller.NewJobController(iJobService)
+	return jobController, nil
+}
+
+// Injectors from role.wire.go:
+
+func InitRoleRouterHandler() (*controller.RoleController, error) {
+	iRoleRepository := repo.NewRoleRepository()
+	iRoleService := service.NewRoleService(iRoleRepository)
+	roleController := controller.NewRoleController(iRoleService)
+	return roleController, nil
+}
+
+// Injectors from task.wire.go:
+
+func InitTaskRouterHandler() (*controller.TaskController, error) {
+	iTaskRepository := repo.NewTaskRepository()
+	iTaskService := service.NewTaskService(iTaskRepository)
+	taskController := controller.NewTaskController(iTaskService)
+	return taskController, nil
 }
 
 // Injectors from user.wire.go:

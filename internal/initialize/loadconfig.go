@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -78,6 +79,13 @@ func loadConfigFromEnv(config *setting.Config) error {
 		Database: getEnvAsInt("REDIS_DATABASE", 0),
 	}
 
+	// Load JWT settings
+	config.JWT = setting.JWTSetting{
+		SecretKey:     getEnv("JWT_SECRET_KEY", "your-secret-key-change-in-production"),
+		TokenExpiry:   getEnvAsDuration("JWT_TOKEN_EXPIRY", 24*time.Hour),
+		RefreshExpiry: getEnvAsDuration("JWT_REFRESH_EXPIRY", 7*24*time.Hour),
+	}
+
 	return nil
 }
 
@@ -100,6 +108,14 @@ func getEnvAsInt(name string, defaultVal int) int {
 func getEnvAsBool(name string, defaultVal bool) bool {
 	valStr := getEnv(name, "")
 	if val, err := strconv.ParseBool(valStr); err == nil {
+		return val
+	}
+	return defaultVal
+}
+
+func getEnvAsDuration(name string, defaultVal time.Duration) time.Duration {
+	valStr := getEnv(name, "")
+	if val, err := time.ParseDuration(valStr); err == nil {
 		return val
 	}
 	return defaultVal

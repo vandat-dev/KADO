@@ -34,7 +34,7 @@ func NewUserController(userService service.IUserService) *UserController {
 func (uc *UserController) Register(c *gin.Context) {
 	var registerRequest dto.RegisterRequestDto
 	if err := c.ShouldBindJSON(&registerRequest); err != nil {
-		response.ErrorResponse(c, 400, "Invalid request data")
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
@@ -56,7 +56,7 @@ func (uc *UserController) Register(c *gin.Context) {
 func (uc *UserController) Login(c *gin.Context) {
 	var loginRequest dto.LoginRequestDto
 	if err := c.ShouldBindJSON(&loginRequest); err != nil {
-		response.ErrorResponse(c, 400, "Invalid request data")
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
@@ -107,11 +107,11 @@ func (uc *UserController) GetListUser(c *gin.Context) {
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		global.Logger.Error("Failed to bind query parameters: " + err.Error())
-		response.ErrorResponse(c, 400, "Invalid query parameters: "+err.Error())
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidParams, nil)
 		return
 	}
 
-	role, _ := c.Get("role")
+	role, _ := c.Get("system_role")
 	result := uc.userService.GetListUser(req, role.(string))
 	response.HandleServiceResult(c, result)
 }
@@ -134,11 +134,11 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 	userRequest := dto.UserRequestDto{}
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
-		response.ErrorResponse(c, 400, "Invalid request payload")
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
-	result := uc.userService.CreateUser(userRequest.Email, userRequest.Username, userRequest.Password, userRequest.Role)
+	result := uc.userService.CreateUser(userRequest)
 	response.HandleServiceResult(c, result)
 }
 
@@ -167,7 +167,7 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 
 	var updateRequest dto.UserUpdateRequestDto
 	if err := c.ShouldBindJSON(&updateRequest); err != nil {
-		response.ErrorResponse(c, 400, "Invalid request data")
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
@@ -186,11 +186,7 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 // @Failure 401 {object} response.Response "Unauthorized"
 // @Router /user/me [get]
 func (uc *UserController) GetCurrentUser(c *gin.Context) {
-	userID, exists := c.Get("userID")
-	if !exists {
-		response.ErrorResponse(c, 401, "Unauthorized")
-		return
-	}
+	userID, _ := c.Get("user_id")
 
 	result := uc.userService.GetUserByID(userID.(uint))
 	response.HandleServiceResult(c, result)

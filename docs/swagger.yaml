@@ -6,8 +6,133 @@ definitions:
         type: string
       token:
         type: string
-      user:
-        $ref: '#/definitions/dto.UserResponseDto'
+    type: object
+  dto.ClientListResponseDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.ClientResponseDto'
+        type: array
+      total:
+        type: integer
+    type: object
+  dto.ClientRequestDto:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.ClientResponseDto:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.ClientUpdateRequestDto:
+    properties:
+      name:
+        type: string
+    type: object
+  dto.CreateTaskDto:
+    properties:
+      client:
+        type: string
+      item:
+        type: string
+      job:
+        type: string
+      note:
+        type: string
+      ot:
+        type: integer
+      role:
+        type: string
+      user_information:
+        $ref: '#/definitions/model.UserInformation'
+      volume:
+        type: integer
+    type: object
+  dto.ItemListResponseDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.ItemResponseDto'
+        type: array
+      total:
+        type: integer
+    type: object
+  dto.ItemRequestDto:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.ItemResponseDto:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.ItemUpdateRequestDto:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.JobListResponseDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.JobResponseDto'
+        type: array
+      total:
+        type: integer
+    type: object
+  dto.JobRequestDto:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.JobResponseDto:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.JobUpdateRequestDto:
+    properties:
+      name:
+        type: string
     type: object
   dto.LoginRequestDto:
     properties:
@@ -19,46 +144,26 @@ definitions:
     - email
     - password
     type: object
-  dto.ProductDetailDto:
+  dto.MyTaskRequestDto:
     properties:
-      created_at:
+      client:
         type: string
-      description:
+      job:
         type: string
-      id:
+      limit:
+        maximum: 100
+        minimum: 0
         type: integer
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  dto.ProductRequestDto:
-    properties:
-      description:
-        type: string
-      name:
-        type: string
-      userID:
+      skip:
+        minimum: 0
         type: integer
-    required:
-    - name
-    type: object
-  dto.ProductResponseDto:
-    properties:
-      created_at:
+      status:
+        enum:
+        - OPEN
+        - IN_PROGRESS
+        - PENDING
+        - COMPLETED
         type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updated_at:
-        type: string
-      user:
-        $ref: '#/definitions/dto.UserResponseDto'
-      user_id:
-        type: integer
     type: object
   dto.RegisterRequestDto:
     properties:
@@ -71,6 +176,7 @@ definitions:
         enum:
         - ADMIN
         - USER
+        - SUPER_ADMIN
         type: string
       username:
         type: string
@@ -79,6 +185,134 @@ definitions:
     - password
     - role
     - username
+    type: object
+  dto.RoleListResponseDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.RoleResponseDto'
+        type: array
+      total:
+        type: integer
+    type: object
+  dto.RoleRequestDto:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.RoleResponseDto:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.RoleUpdateRequestDto:
+    properties:
+      name:
+        type: string
+    type: object
+  dto.TaskListResponseDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.TaskResponseDto'
+        type: array
+      total:
+        type: integer
+    type: object
+  dto.TaskProcessDto:
+    properties:
+      status:
+        enum:
+        - OPEN
+        - IN_PROGRESS
+        - PENDING
+        - COMPLETED
+        type: string
+      work_time:
+        type: integer
+    type: object
+  dto.TaskResponseDto:
+    properties:
+      client:
+        type: string
+      created_at:
+        type: string
+      custom_created_at:
+        type: string
+      delivery:
+        type: boolean
+      ended_at:
+        type: string
+      id:
+        type: integer
+      item:
+        type: string
+      job:
+        type: string
+      note:
+        type: string
+      ot:
+        type: integer
+      role:
+        type: string
+      started_at:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      user_information:
+        $ref: '#/definitions/model.UserInformation'
+      volume:
+        type: integer
+      work_time:
+        type: integer
+    type: object
+  dto.UpdateTaskDto:
+    properties:
+      client:
+        type: string
+      custom_created_at:
+        type: string
+      ended_at:
+        type: string
+      item:
+        type: string
+      job:
+        type: string
+      minute:
+        type: integer
+      note:
+        type: string
+      ot:
+        type: integer
+      role:
+        type: string
+      started_at:
+        type: string
+      status:
+        enum:
+        - OPEN
+        - IN_PROGRESS
+        - PENDING
+        - COMPLETED
+        type: string
+      user_information:
+        $ref: '#/definitions/model.UserInformation'
+      volume:
+        type: integer
+      work_time:
+        type: integer
     type: object
   dto.UserListResponseDto:
     properties:
@@ -91,41 +325,90 @@ definitions:
     type: object
   dto.UserRequestDto:
     properties:
+      address:
+        type: string
       email:
+        type: string
+      full_name:
+        type: string
+      gender:
         type: string
       password:
         minLength: 6
         type: string
-      role:
+      phone_number:
+        type: string
+      system_role:
+        enum:
+        - ADMIN
+        - USER
+        - SUPER_ADMIN
         type: string
       username:
         type: string
     required:
     - email
     - password
-    - role
+    - system_role
     - username
     type: object
   dto.UserResponseDto:
     properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      phone_number:
+        type: string
+      system_role:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.UserUpdateRequestDto:
+    properties:
+      address:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      is_active:
+        type: boolean
+      password:
+        minLength: 6
+        type: string
+      phone_number:
+        type: string
+      system_role:
+        enum:
+        - ADMIN
+        - USER
+        - SUPER_ADMIN
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserInformation:
+    properties:
+      avatar:
+        type: string
       email:
         type: string
       id:
         type: integer
-      role:
-        type: string
-      username:
-        type: string
-    required:
-    - id
-    type: object
-  dto.UserUpdateRequestDto:
-    properties:
-      password:
-        minLength: 6
-        type: string
-      role:
-        type: string
       username:
         type: string
     type: object
@@ -137,7 +420,7 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8386
+host: 10.2.21.86:8386
 info:
   contact:
     name: API Support
@@ -147,18 +430,770 @@ info:
   title: Go API
   version: "1.0"
 paths:
-  /product/create:
+  /client/create:
     post:
       consumes:
       - application/json
-      description: Create a new product with name, description, and user ID
+      description: Create a new client
       parameters:
-      - description: Product Request
+      - description: Client data
         in: body
-        name: product
+        name: client
         required: true
         schema:
-          $ref: '#/definitions/dto.ProductRequestDto'
+          $ref: '#/definitions/dto.ClientRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Client created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ClientResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new client
+      tags:
+      - clients
+  /client/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Client deleted successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Client not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete client
+      tags:
+      - clients
+  /client/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get client details by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Client details
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ClientResponseDto'
+              type: object
+        "422":
+          description: Client not found
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get client by ID
+      tags:
+      - clients
+  /client/list:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of clients with optional filtering
+      parameters:
+      - default: 0
+        description: Number of records to skip
+        in: query
+        name: skip
+        type: integer
+      - default: 10
+        description: Number of records to return
+        in: query
+        name: limit
+        type: integer
+      - description: Filter by client name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of clients
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ClientListResponseDto'
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of clients
+      tags:
+      - clients
+  /client/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Client update data
+        in: body
+        name: client
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ClientUpdateRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Client updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ClientResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Client not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update client
+      tags:
+      - clients
+  /item/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new item
+      parameters:
+      - description: Item data
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ItemRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ItemResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new item
+      tags:
+      - items
+  /item/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete item by ID
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item deleted successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Item not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete item
+      tags:
+      - items
+  /item/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get item details by ID
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item details
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ItemResponseDto'
+              type: object
+        "422":
+          description: Item not found
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get item by ID
+      tags:
+      - items
+  /item/list:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of items with optional filtering
+      parameters:
+      - default: 0
+        description: Number of records to skip
+        in: query
+        name: skip
+        type: integer
+      - default: 10
+        description: Number of records to return
+        in: query
+        name: limit
+        type: integer
+      - description: Filter by item name
+        in: query
+        name: name
+        type: string
+      - description: Filter by item category
+        in: query
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of items
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ItemListResponseDto'
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of items
+      tags:
+      - items
+  /item/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update item by ID
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Item update data
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ItemUpdateRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ItemResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Item not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update item
+      tags:
+      - items
+  /job/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new job
+      parameters:
+      - description: Job data
+        in: body
+        name: job
+        required: true
+        schema:
+          $ref: '#/definitions/dto.JobRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Job created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JobResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new job
+      tags:
+      - jobs
+  /job/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete job by ID
+      parameters:
+      - description: Job ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Job deleted successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Job not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete job
+      tags:
+      - jobs
+  /job/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get job details by ID
+      parameters:
+      - description: Job ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Job details
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JobResponseDto'
+              type: object
+        "422":
+          description: Job not found
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get job by ID
+      tags:
+      - jobs
+  /job/list:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of jobs with optional filtering
+      parameters:
+      - default: 0
+        description: Number of records to skip
+        in: query
+        name: skip
+        type: integer
+      - default: 10
+        description: Number of records to return
+        in: query
+        name: limit
+        type: integer
+      - description: Filter by job name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of jobs
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JobListResponseDto'
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of jobs
+      tags:
+      - jobs
+  /job/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update job by ID
+      parameters:
+      - description: Job ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Job update data
+        in: body
+        name: job
+        required: true
+        schema:
+          $ref: '#/definitions/dto.JobUpdateRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Job updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JobResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Job not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update job
+      tags:
+      - jobs
+  /role/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new role
+      parameters:
+      - description: Role data
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RoleRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RoleResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new role
+      tags:
+      - roles
+  /role/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete role by ID
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role deleted successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Role not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete role
+      tags:
+      - roles
+  /role/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get role details by ID
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role details
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RoleResponseDto'
+              type: object
+        "422":
+          description: Role not found
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get role by ID
+      tags:
+      - roles
+  /role/list:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of roles with optional filtering
+      parameters:
+      - default: 0
+        description: Number of records to skip
+        in: query
+        name: skip
+        type: integer
+      - default: 10
+        description: Number of records to return
+        in: query
+        name: limit
+        type: integer
+      - description: Filter by role name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of roles
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RoleListResponseDto'
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of roles
+      tags:
+      - roles
+  /role/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update role by ID
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Role update data
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RoleUpdateRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RoleResponseDto'
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Role not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update role
+      tags:
+      - roles
+  /task/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new task with the provided information
+      parameters:
+      - description: Create Task Request
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTaskDto'
       produces:
       - application/json
       responses:
@@ -187,16 +1222,16 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
-      summary: Create a new product
+      summary: Create a new task
       tags:
-      - product
-  /product/detail/{id}:
-    get:
+      - task
+  /task/delete/{id}:
+    delete:
       consumes:
       - application/json
-      description: Get product details by ID
+      description: Delete task by ID
       parameters:
-      - description: Product ID
+      - description: Task ID
         in: path
         name: id
         required: true
@@ -211,30 +1246,36 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/dto.ProductDetailDto'
+                  type: string
               type: object
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/response.Response'
         "404":
-          description: Product not found
+          description: Task not found
           schema:
             $ref: '#/definitions/response.Response'
         "422":
-          description: Invalid product ID
+          description: Invalid task ID
           schema:
             $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
-      summary: Get product by ID
+      summary: Delete a task
       tags:
-      - product
-  /product/list:
+      - task
+  /task/detail/{id}:
     get:
       consumes:
       - application/json
-      description: Get all products
+      description: Get task details by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -245,9 +1286,136 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/dto.ProductResponseDto'
-                  type: array
+                  $ref: '#/definitions/dto.TaskResponseDto'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Task not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Invalid task ID
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get task by ID
+      tags:
+      - task
+  /task/list:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of tasks with filtering options. Only admin
+        users can access this endpoint without user filter.
+      parameters:
+      - default: 0
+        description: Skip
+        in: query
+        name: skip
+        type: integer
+      - default: 10
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Client filter
+        in: query
+        name: client
+        type: string
+      - description: Job filter
+        in: query
+        name: job
+        type: string
+      - description: Status filter
+        enum:
+        - OPEN
+        - IN_PROGRESS
+        - PENDING
+        - COMPLETED
+        in: query
+        name: status
+        type: string
+      - description: User ID filter
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paginated list of tasks
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.TaskListResponseDto'
+              type: object
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: 'Access denied: Only admin can view all tasks'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of tasks with pagination and filtering
+      tags:
+      - task
+  /task/my-tasks:
+    get:
+      consumes:
+      - application/json
+      description: Get tasks belonging to the authenticated user
+      parameters:
+      - default: 0
+        description: Skip
+        in: query
+        name: skip
+        type: integer
+      - default: 10
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Client filter
+        in: query
+        name: client
+        type: string
+      - description: Job filter
+        in: query
+        name: job
+        type: string
+      - description: Status filter
+        enum:
+        - OPEN
+        - IN_PROGRESS
+        - PENDING
+        - COMPLETED
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paginated list of my tasks
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.MyTaskRequestDto'
               type: object
         "401":
           description: Unauthorized
@@ -259,9 +1427,109 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
-      summary: Get list of products
+      summary: Get current user's tasks
       tags:
-      - product
+      - task
+  /task/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update task information by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Task Request
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTaskDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.TaskResponseDto'
+              type: object
+        "400":
+          description: Invalid request payload
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Task not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Invalid task ID
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update a task
+      tags:
+      - task
+  /task/update_progress/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update task progress (work time and status) by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Task Progress Request
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TaskProcessDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.TaskResponseDto'
+              type: object
+        "400":
+          description: Invalid request payload
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Task not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Invalid task ID
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update task progress
+      tags:
+      - task
   /user/create_user:
     post:
       consumes:

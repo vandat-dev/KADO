@@ -2,5 +2,9 @@ package user
 
 type UsersRouterGroup struct {
 	UsersRouter
-	ProductRouter
+	TaskRouter
+	ClientRouter
+	JobRouter
+	RoleRouter
+	ItemRouter
 }

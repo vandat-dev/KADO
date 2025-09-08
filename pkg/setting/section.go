@@ -2,6 +2,7 @@ package setting
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -12,6 +13,7 @@ type Config struct {
 	Postgres PostgresSetting `map_structure:"postgres"`
 	Redis    RedisSetting    `map_structure:"redis"`
 	Logger   LoggerSetting   `map_structure:"logger"`
+	JWT      JWTSetting      `map_structure:"jwt"`
 }
 
 type ServerSetting struct {
@@ -56,6 +58,12 @@ type RedisSetting struct {
 	Port     int    `map_structure:"port"`
 	Password string `map_structure:"password"`
 	Database int    `map_structure:"database"`
+}
+
+type JWTSetting struct {
+	SecretKey     string        `map_structure:"secret_key"`
+	TokenExpiry   time.Duration `map_structure:"token_expiry"`
+	RefreshExpiry time.Duration `map_structure:"refresh_expiry"`
 }
 
 type WebSocketManager interface {

@@ -3,9 +3,8 @@ package initialize
 import (
 	_ "base_go_be/docs"
 	"base_go_be/global"
+	"fmt"
 
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 )
 
@@ -26,7 +25,8 @@ func Run() {
 	InitWebSocketManager()
 
 	r := InitRouter()
-	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	err := r.Run(":8386")
+	port := fmt.Sprintf(":%d", global.Config.Server.Port)
+	global.Logger.Info("Server starting on port", zap.String("port", port))
+	err := r.Run(port)
 	handleErr(err)
 }
