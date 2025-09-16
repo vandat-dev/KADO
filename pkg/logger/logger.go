@@ -2,10 +2,11 @@ package logger
 
 import (
 	"base_go_be/pkg/setting"
+	"os"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"os"
 )
 
 type LogZap struct {
@@ -29,6 +30,8 @@ func NewLogger(config setting.LoggerSetting) *LogZap {
 		level = zapcore.InfoLevel
 	}
 	encoder := getEncoderLogger()
+
+	// Write log to file
 	hook := lumberjack.Logger{
 		Filename:   config.FileLogName,
 		MaxSize:    config.MaxSize, // megabytes
@@ -36,9 +39,15 @@ func NewLogger(config setting.LoggerSetting) *LogZap {
 		MaxAge:     config.MaxAge, //days
 		Compress:   config.Compress,
 	}
+	//_ = hook
 	core := zapcore.NewCore(
 		encoder,
-		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)), level)
+		zapcore.NewMultiWriteSyncer(
+			zapcore.AddSync(os.Stdout),
+			zapcore.AddSync(&hook),
+		),
+		level,
+	)
 	return &LogZap{zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))}
 }
 

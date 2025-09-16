@@ -177,10 +177,9 @@ func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userI
 	if taskRequest.Status != "" {
 		existingTask.Status = taskRequest.Status
 	}
-
-	// Update pointer fields only if provided
-	if taskRequest.OT != nil {
-		existingTask.OT = *taskRequest.OT
+	
+	if taskRequest.OT != "" {
+		existingTask.OT = taskRequest.OT
 	}
 	if taskRequest.Volume != nil {
 		existingTask.Volume = *taskRequest.Volume

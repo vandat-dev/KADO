@@ -50,7 +50,7 @@ definitions:
       note:
         type: string
       ot:
-        type: integer
+        type: string
       role:
         type: string
       user_information:
@@ -260,7 +260,7 @@ definitions:
       note:
         type: string
       ot:
-        type: integer
+        type: string
       role:
         type: string
       started_at:
@@ -295,7 +295,7 @@ definitions:
       note:
         type: string
       ot:
-        type: integer
+        type: string
       role:
         type: string
       started_at:
@@ -420,7 +420,6 @@ definitions:
       message:
         type: string
     type: object
-host: 10.2.21.86:8386
 info:
   contact:
     name: API Support

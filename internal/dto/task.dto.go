@@ -13,7 +13,7 @@ type TaskRequestDto struct {
 	Item            string                 `json:"item"`
 	Role            string                 `json:"role"`
 	Note            string                 `json:"note"`
-	OT              *int                   `json:"ot"`
+	OT              string                 `json:"ot"`
 	Volume          *int                   `json:"volume"`
 	StartedAt       *time.Time             `json:"started_at"`
 	EndedAt         *time.Time             `json:"ended_at"`
@@ -29,7 +29,7 @@ type CreateTaskDto struct {
 	Item            string                 `json:"item,omitempty"`
 	Role            string                 `json:"role,omitempty"`
 	Note            string                 `json:"note,omitempty"`
-	OT              int                    `json:"ot,omitempty"`
+	OT              string                 `json:"ot,omitempty"`
 	Volume          int                    `json:"volume,omitempty"`
 }
 
@@ -40,7 +40,7 @@ type UpdateTaskDto struct {
 	Item            string                 `json:"item"`
 	Role            string                 `json:"role"`
 	Note            string                 `json:"note"`
-	OT              *int                   `json:"ot"`
+	OT              string                 `json:"ot"`
 	Volume          *int                   `json:"volume"`
 	StartedAt       *time.Time             `json:"started_at"`
 	EndedAt         *time.Time             `json:"ended_at"`
@@ -59,7 +59,7 @@ type TaskResponseDto struct {
 	Item            string                 `json:"item"`
 	Role            string                 `json:"role"`
 	Note            string                 `json:"note"`
-	OT              int                    `json:"ot"`
+	OT              string                 `json:"ot"`
 	Volume          int                    `json:"volume"`
 	StartedAt       *time.Time             `json:"started_at"`
 	EndedAt         *time.Time             `json:"ended_at"`

@@ -2358,7 +2358,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ot": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "role": {
                     "type": "string"
@@ -2674,7 +2674,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ot": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "role": {
                     "type": "string"
@@ -2727,7 +2727,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ot": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "role": {
                     "type": "string"
@@ -2926,7 +2926,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "10.2.21.86:8386",
+	Host:             "",
 	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Go API",

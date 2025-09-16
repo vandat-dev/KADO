@@ -1,2 +1,43 @@
-*.git
+# Ignore development files
+.git
+.gitignore
+README.md
+WEBSOCKET_GUIDE.md
+.env
+example.env
+storages/
 *.md
+
+# Ignore build artifacts
+kado-server
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore test files
+*_test.go
+tests/
+restapi/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+storages/logs/
+tmp/
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Ignore migration files (if not needed in container)
+migrations/
+
+# Keep vendor directory - it will be explicitly copied

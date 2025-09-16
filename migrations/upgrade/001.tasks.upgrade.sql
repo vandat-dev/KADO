@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     item VARCHAR(255),
     role VARCHAR(100),
     note TEXT,
-    ot INT,
+    ot VARCHAR(255),
     volume INT,
     started_at TIMESTAMP,
     ended_at TIMESTAMP,

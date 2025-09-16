@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # KADO Application
+  kado-server:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile
+    container_name: kado-server-dev
+    ports:
+      - "8888:8000"
+    environment:
+      - SERVER_PORT=8000
+      - SERVER_MODE=dev
+      - MYSQL_HOST=127.0.0.1
+      - MYSQL_PORT=33306
+      - MYSQL_USERNAME=admin
+      - MYSQL_PASSWORD=123123
+      - MYSQL_DATABASE=go_database
+      - MYSQL_MAX_IDLE_CONN=10
+      - MYSQL_MAX_OPEN_CONN=100
+      - MYSQL_CONN_MAX_LIFETIME=3600
+      - POSTGRES_HOST=172.17.0.1
+      - POSTGRES_PORT=5433
+      - POSTGRES_USERNAME=admin
+      - POSTGRES_PASSWORD=123123
+      - POSTGRES_DATABASE=kado
+      - POSTGRES_SSLMODE=disable
+      - POSTGRES_MAX_IDLE_CONN=10
+      - POSTGRES_MAX_OPEN_CONN=100
+      - POSTGRES_CONN_MAX_LIFETIME=3600
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_DATABASE=0
+      - LOG_LEVEL=debug
+      - LOG_FILE_NAME=/app/logs/development.xxx.log
+      - LOG_MAX_SIZE=500
+      - LOG_MAX_BACKUPS=3
+      - LOG_MAX_AGE=28
+      - LOG_COMPRESS=true
+      - JWT_SECRET_KEY=your-super-secret
+      - JWT_TOKEN_EXPIRY=72h
+      - JWT_REFRESH_EXPIRY=168h
+    volumes:
+      - app_logs:/app/logs
+    networks:
+      - kado-network
+    restart: unless-stopped
+
+volumes:
+  app_logs:
+
+networks:
+  kado-network:
+    driver: bridge

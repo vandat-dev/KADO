@@ -11,7 +11,6 @@ import (
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
-// @host 10.2.21.86:8386
 // @BasePath /v1
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
