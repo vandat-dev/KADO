@@ -93,7 +93,7 @@ func (tc *TaskController) GetListTask(c *gin.Context) {
 // @Failure 401 {object} response.Response "Unauthorized"
 // @Success 200 {object} response.Response{data=dto.MyTaskRequestDto} "Paginated list of my tasks"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /task/my-tasks [get]
+// @Router /task/my_tasks [get]
 func (tc *TaskController) GetMyTasks(c *gin.Context) {
 
 	var req dto.MyTaskRequestDto

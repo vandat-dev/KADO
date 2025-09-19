@@ -1579,7 +1579,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/task/my-tasks": {
+        "/task/my_tasks": {
             "get": {
                 "security": [
                     {
