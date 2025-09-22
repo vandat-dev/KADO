@@ -59,6 +59,8 @@ func (tc *TaskController) GetTaskByID(c *gin.Context) {
 // @Param job query string false "Job filter"
 // @Param status query string false "Status filter" Enums(OPEN, IN_PROGRESS, PENDING, COMPLETED)
 // @Param user_id query int false "User ID filter"
+// @Param start_date query string false "Start date (YYYY-MM-DD)"
+// @Param end_date query string false "End date (YYYY-MM-DD)"
 // @Success 200 {object} response.Response{data=dto.TaskListResponseDto} "Paginated list of tasks"
 // @Failure 400 {object} response.Response "Invalid query parameters"
 // @Failure 401 {object} response.Response "Unauthorized"
@@ -69,7 +71,7 @@ func (tc *TaskController) GetListTask(c *gin.Context) {
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		global.Logger.Error("Failed to bind query parameters: " + err.Error())
-		response.DataDetailResponse(c, 422, response.ErrCodeInvalidParams, nil)
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
@@ -100,7 +102,7 @@ func (tc *TaskController) GetMyTasks(c *gin.Context) {
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		global.Logger.Error("Failed to bind query parameters: " + err.Error())
-		response.DataDetailResponse(c, 422, response.ErrCodeInvalidParams, nil)
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
@@ -160,7 +162,7 @@ func (tc *TaskController) UpdateTask(c *gin.Context) {
 	idUint64, err := strconv.ParseUint(idParam, 10, 0)
 	id := uint(idUint64)
 	if err != nil {
-		response.DataDetailResponse(c, 422, response.ErrCodeInvalidParams, nil)
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 
@@ -194,7 +196,7 @@ func (tc *TaskController) UpdateProgressTask(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	idUint64, err := strconv.ParseUint(idParam, 10, 0)
 	if err != nil {
-		response.DataDetailResponse(c, 422, response.ErrCodeInvalidParams, nil)
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 	id := uint(idUint64)
@@ -227,7 +229,7 @@ func (tc *TaskController) DeleteTask(c *gin.Context) {
 	idUint64, err := strconv.ParseUint(idParam, 10, 0)
 	id := uint(idUint64)
 	if err != nil {
-		response.DataDetailResponse(c, 422, response.ErrCodeInvalidParams, nil)
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
 

@@ -67,6 +67,14 @@ func (tr *TaskRepository) GetListTask(req dto.TaskListRequestDto) ([]model.Task,
 		query = query.Where("user_id = ?", req.UserID)
 	}
 
+	if req.StartDate != nil {
+		query = query.Where("created_at >= ?", *req.StartDate)
+	}
+	if req.EndDate != nil {
+		endInclusive := req.EndDate.AddDate(0, 0, 1)
+		query = query.Where("created_at < ?", endInclusive)
+	}
+
 	// Get total count
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err

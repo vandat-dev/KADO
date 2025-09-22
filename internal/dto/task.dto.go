@@ -73,12 +73,14 @@ type TaskResponseDto struct {
 
 // TaskListRequestDto for pagination and filtering
 type TaskListRequestDto struct {
-	Skip   int    `form:"skip" binding:"min=0"`
-	Limit  int    `form:"limit" binding:"min=0,max=100"`
-	Client string `form:"client"`
-	Job    string `form:"job"`
-	Status string `form:"status" binding:"omitempty,oneof=OPEN IN_PROGRESS PENDING COMPLETED"`
-	UserID uint   `form:"user_id"`
+	Skip      int        `form:"skip" binding:"min=0"`
+	Limit     int        `form:"limit" binding:"min=0,max=100"`
+	Client    string     `form:"client"`
+	Job       string     `form:"job"`
+	Status    string     `form:"status" binding:"omitempty,oneof=OPEN IN_PROGRESS PENDING COMPLETED"`
+	UserID    uint       `form:"user_id"`
+	StartDate *time.Time `form:"start_date" time_format:"2006-01-02" time_utc:"true"`
+	EndDate   *time.Time `form:"end_date"   time_format:"2006-01-02" time_utc:"true"`
 }
 
 type MyTaskRequestDto struct {
