@@ -16,7 +16,7 @@ type IUserService interface {
 	GetListUser(req dto.UserListRequestDto, userRole string) *response.ServiceResult
 	CreateUser(userDto dto.UserRequestDto) *response.ServiceResult
 	UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *response.ServiceResult
-	Login(email string, password string) *response.ServiceResult
+	Login(username string, password string) *response.ServiceResult
 	Register(registerDto dto.RegisterRequestDto) *response.ServiceResult
 }
 
@@ -92,8 +92,13 @@ func (us *userService) GetListUser(req dto.UserListRequestDto, userRole string) 
 
 func (us *userService) CreateUser(userDto dto.UserRequestDto) *response.ServiceResult {
 
-	existingUser := us.userRepo.GetUserByEmail(userDto.Email)
-	if existingUser != nil {
+	existingEmail := us.userRepo.GetUserByEmail(userDto.Email)
+	if existingEmail != nil {
+		return response.NewServiceErrorWithCode(409, response.ErrCodeUserHasExists)
+	}
+
+	existingUserName := us.userRepo.GetUserByUsername(userDto.Username)
+	if existingUserName != nil {
 		return response.NewServiceErrorWithCode(409, response.ErrCodeUserHasExists)
 	}
 
@@ -183,8 +188,8 @@ func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *
 	return response.NewServiceResult(&userResponse)
 }
 
-func (us *userService) Login(email string, password string) *response.ServiceResult {
-	user := us.userRepo.GetUserByEmail(email)
+func (us *userService) Login(username string, password string) *response.ServiceResult {
+	user := us.userRepo.GetUserByUsername(username)
 	if user == nil {
 		return response.NewServiceErrorWithCode(401, response.ErrCodeInvalidLogin)
 	}

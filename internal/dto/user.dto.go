@@ -13,6 +13,12 @@ type UserRequestDto struct {
 	SystemRole  string `json:"system_role" binding:"required,oneof=ADMIN USER SUPER_ADMIN"`
 }
 
+type CreateUserDto struct {
+	Email      string `json:"email" binding:"required,email"`
+	Username   string `json:"username" binding:"required"`
+	SystemRole string `json:"system_role" binding:"required,oneof=ADMIN USER SUPER_ADMIN"`
+}
+
 type UserUpdateRequestDto struct {
 	Username    string `json:"username"`
 	FullName    string `json:"full_name"`

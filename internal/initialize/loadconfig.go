@@ -36,6 +36,10 @@ func loadConfigFromEnv(config *setting.Config) error {
 		Mode: getEnv("SERVER_MODE", "dev"),
 	}
 
+	config.System = setting.SystemSetting{
+		DefaultPassWord: getEnv("SYSTEM_DEFAULT_PASSWORD", "123123"),
+	}
+
 	// Load MySQL settings
 	config.Mysql = setting.MySQLSetting{
 		Host:            getEnv("MYSQL_HOST", "127.0.0.1"),

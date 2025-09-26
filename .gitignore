@@ -6,6 +6,7 @@ tests/__pycache__/
 tests/*.pyc
 
 server
+kado-server
 
 .env
 .venv/

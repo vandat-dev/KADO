@@ -10,6 +10,7 @@ import (
 
 type IUserRepository interface {
 	GetUserByEmail(email string) *model.User
+	GetUserByUsername(username string) *model.User
 	GetUserByID(id uint) *model.User
 	GetListUser(req dto.UserListRequestDto) ([]*model.User, int64, error)
 	CreateUser(user *model.User) (uint, error)
@@ -27,6 +28,15 @@ type userRepository struct {
 func (r *userRepository) GetUserByEmail(email string) *model.User {
 	var user model.User
 	err := r.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return nil
+	}
+	return &user
+}
+
+func (r *userRepository) GetUserByUsername(username string) *model.User {
+	var user model.User
+	err := r.db.Where("username = ?", username).First(&user).Error
 	if err != nil {
 		return nil
 	}

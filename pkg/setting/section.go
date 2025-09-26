@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	Server   ServerSetting   `map_structure:"server"`
+	System   SystemSetting   `map_structure:"system"`
 	Mysql    MySQLSetting    `map_structure:"mysql"`
 	Postgres PostgresSetting `map_structure:"postgres"`
 	Redis    RedisSetting    `map_structure:"redis"`
@@ -19,6 +20,10 @@ type Config struct {
 type ServerSetting struct {
 	Port int    `map_structure:"port"`
 	Mode string `map_structure:"mode"`
+}
+
+type SystemSetting struct {
+	DefaultPassWord string `map_structure:"default_password"`
 }
 
 type MySQLSetting struct {

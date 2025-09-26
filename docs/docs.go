@@ -1872,7 +1872,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserRequestDto"
+                            "$ref": "#/definitions/dto.CreateUserDto"
                         }
                     }
                 ],
@@ -2383,6 +2383,30 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateUserDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "system_role",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "system_role": {
+                    "type": "string",
+                    "enum": [
+                        "ADMIN",
+                        "USER",
+                        "SUPER_ADMIN"
+                    ]
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ItemListResponseDto": {
             "type": "object",
             "properties": {
@@ -2504,14 +2528,14 @@ const docTemplate = `{
         "dto.LoginRequestDto": {
             "type": "object",
             "required": [
-                "email",
-                "password"
+                "password",
+                "username"
             ],
             "properties": {
-                "email": {
+                "password": {
                     "type": "string"
                 },
-                "password": {
+                "username": {
                     "type": "string"
                 }
             }
@@ -2778,47 +2802,6 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
-                }
-            }
-        },
-        "dto.UserRequestDto": {
-            "type": "object",
-            "required": [
-                "email",
-                "password",
-                "system_role",
-                "username"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 6
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "system_role": {
-                    "type": "string",
-                    "enum": [
-                        "ADMIN",
-                        "USER",
-                        "SUPER_ADMIN"
-                    ]
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         },

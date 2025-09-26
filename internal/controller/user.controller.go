@@ -60,7 +60,7 @@ func (uc *UserController) Login(c *gin.Context) {
 		return
 	}
 
-	result := uc.userService.Login(loginRequest.Email, loginRequest.Password)
+	result := uc.userService.Login(loginRequest.Username, loginRequest.Password)
 	response.HandleServiceResult(c, result)
 }
 
@@ -123,7 +123,7 @@ func (uc *UserController) GetListUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param user body dto.UserRequestDto true "User Information"
+// @Param user body dto.CreateUserDto true "User Information"
 // @Success 200 {object} response.Response{data=map[string]interface{}} "User created successfully"
 // @Failure 400 {object} response.Response "Invalid request payload"
 // @Failure 401 {object} response.Response "Unauthorized"
@@ -131,14 +131,20 @@ func (uc *UserController) GetListUser(c *gin.Context) {
 // @Failure 405 {object} response.Response "User already exists"
 // @Router /user/create_user [post]
 func (uc *UserController) CreateUser(c *gin.Context) {
-	userRequest := dto.UserRequestDto{}
+	userRequest := dto.CreateUserDto{}
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
+	dataUser := dto.UserRequestDto{
+		Email:      userRequest.Email,
+		Username:   userRequest.Username,
+		SystemRole: userRequest.SystemRole,
+		Password:   global.Config.System.DefaultPassWord,
+	}
 
-	result := uc.userService.CreateUser(userRequest)
+	result := uc.userService.CreateUser(dataUser)
 	response.HandleServiceResult(c, result)
 }
 
