@@ -196,14 +196,13 @@ func (us *userService) Login(username string, password string) *response.Service
 		return response.NewServiceErrorWithCode(401, response.ErrCodeInvalidLogin)
 	}
 
-	if user.IsActive != nil && !*user.IsActive {
-		return response.NewServiceErrorWithCode(403, response.ErrCodeAccountLock)
-	}
-
 	// Compare password hash
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return response.NewServiceErrorWithCode(401, response.ErrCodeInvalidLogin)
+	}
+	if user.IsActive != nil && !*user.IsActive {
+		return response.NewServiceErrorWithCode(403, response.ErrCodeAccountLock)
 	}
 
 	// Generate JWT token
