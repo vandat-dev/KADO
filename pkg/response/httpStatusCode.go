@@ -39,41 +39,41 @@ const (
 var (
 	msg = map[int]string{
 		//	common
-		ErrCodeSuccess:       "Success",
-		ErrInvalidToken:      "Token invalid",
-		ErrCodeInvalidLogin:  "Invalid login credentials",
-		ErrCodeAccessDenied:  "Access denied",
-		ErrCodeInternalError: "Internal server error",
-		ErrCodeInvalidData:   "Invalid request data",
-		ErrCodeUnauthorized:  "Unauthorized",
+		ErrCodeSuccess:       "SUCCESS",
+		ErrInvalidToken:      "TOKEN_INVALID",
+		ErrCodeInvalidLogin:  "LOGIN_FAILED",
+		ErrCodeAccessDenied:  "ACCESS_DENIED",
+		ErrCodeInternalError: "INTERNAL_SERVER_ERROR",
+		ErrCodeInvalidData:   "INVALID_DATA",
+		ErrCodeUnauthorized:  "UNAUTHORIZED",
 
 		//	user
-		ErrCodeInvalidParams:        "Email invalid",
-		ErrCodeUserHasExists:        "User already exist",
-		ErrCodeUserNotFound:         "User not found",
-		ErrCodeAccountLock:          "Your account has been locked",
-		ErrCodeUserPermissionDenied: "You do not have permission to interact with this user",
+		ErrCodeInvalidParams:        "EMAIL_INVALID",
+		ErrCodeUserHasExists:        "USER_ALREADY_EXISTS",
+		ErrCodeUserNotFound:         "USER_NOT_FOUND",
+		ErrCodeAccountLock:          "USER_ACCOUNT_LOCKED",
+		ErrCodeUserPermissionDenied: "YOU_DO_NOT_HAVE_PERMISSION_TO_INTERACT_WITH_THIS_USER",
 
 		//	task
-		ErrCodeTaskNotFound:         "Task not found",
-		ErrCodeTaskExists:           "Task already exists",
-		ErrCodeTaskPermissionDenied: "You do not have permission to interact with this event",
+		ErrCodeTaskNotFound:         "TASK_NOT_FOUND",
+		ErrCodeTaskExists:           "TASK_ALREADY_EXISTS",
+		ErrCodeTaskPermissionDenied: "YOU_DO_NOT_HAVE_PERMISSION_TO_INTERACT_WITH_THIS_TASK",
 
 		//	client
-		ErrCodeClientNotFound: "Client not found",
-		ErrCodeClientExists:   "Client already exists",
+		ErrCodeClientNotFound: "CLIENT_NOT_FOUND",
+		ErrCodeClientExists:   "CLIENT_ALREADY_EXISTS",
 
 		//	job
-		ErrCodeJobNotFound: "Job not found",
-		ErrCodeJobExists:   "Job already exists",
+		ErrCodeJobNotFound: "JOB_NOT_FOUND",
+		ErrCodeJobExists:   "JOB_ALREADY_EXISTS",
 
 		//	role
-		ErrCodeRoleNotFound: "Role not found",
-		ErrCodeRoleExists:   "Role already exists",
+		ErrCodeRoleNotFound: "ROLE_NOT_FOUND",
+		ErrCodeRoleExists:   "ROLE_ALREADY_EXISTS",
 
 		//	item
-		ErrCodeItemNotFound: "Item not found",
-		ErrCodeItemExists:   "Item already exists",
+		ErrCodeItemNotFound: "ITEM_NOT_FOUND",
+		ErrCodeItemExists:   "ITEM_ALREADY_EXISTS",
 	}
 )
 
