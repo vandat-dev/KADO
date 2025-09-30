@@ -137,11 +137,15 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
 		return
 	}
+
 	dataUser := dto.UserRequestDto{
 		Email:      userRequest.Email,
 		Username:   userRequest.Username,
 		SystemRole: userRequest.SystemRole,
 		Password:   global.Config.System.DefaultPassWord,
+	}
+	if userRequest.FullName != "" {
+		dataUser.FullName = userRequest.FullName
 	}
 
 	result := uc.userService.CreateUser(dataUser)
@@ -177,7 +181,9 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	result := uc.userService.UpdateUser(id, updateRequest)
+	userID, _ := c.Get("user_id")
+	userRole, _ := c.Get("system_role")
+	result := uc.userService.UpdateUser(id, updateRequest, userRole.(string), userID.(uint))
 	response.HandleServiceResult(c, result)
 }
 

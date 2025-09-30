@@ -14,7 +14,7 @@ type User struct {
 	Gender      string    `gorm:"type:varchar(15)" json:"gender"`
 	Address     string    `gorm:"type:varchar(100)" json:"address"`
 	SystemRole  string    `gorm:"type:varchar(50);not null;default:'USER'" json:"system_role"`
-	IsActive    bool      `gorm:"not null;default:true" json:"is_active"`
+	IsActive    *bool     `gorm:"not null;default:true" json:"is_active"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }

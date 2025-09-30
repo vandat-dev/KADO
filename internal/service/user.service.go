@@ -15,7 +15,7 @@ type IUserService interface {
 	GetUserByID(id uint) *response.ServiceResult
 	GetListUser(req dto.UserListRequestDto, userRole string) *response.ServiceResult
 	CreateUser(userDto dto.UserRequestDto) *response.ServiceResult
-	UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *response.ServiceResult
+	UpdateUser(id uint, updateDto dto.UserUpdateRequestDto, userRole string, userID uint) *response.ServiceResult
 	Login(username string, password string) *response.ServiceResult
 	Register(registerDto dto.RegisterRequestDto) *response.ServiceResult
 }
@@ -42,7 +42,7 @@ func (us *userService) GetUserByID(id uint) *response.ServiceResult {
 		Gender:      result.Gender,
 		Address:     result.Address,
 		SystemRole:  result.SystemRole,
-		IsActive:    result.IsActive,
+		IsActive:    *result.IsActive,
 		CreatedAt:   result.CreatedAt,
 		UpdatedAt:   result.UpdatedAt,
 	}
@@ -108,6 +108,7 @@ func (us *userService) CreateUser(userDto dto.UserRequestDto) *response.ServiceR
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
 
+	active := true
 	user := &model.User{
 		Email:       userDto.Email,
 		Username:    userDto.Username,
@@ -117,7 +118,7 @@ func (us *userService) CreateUser(userDto dto.UserRequestDto) *response.ServiceR
 		Gender:      userDto.Gender,
 		Address:     userDto.Address,
 		SystemRole:  userDto.SystemRole,
-		IsActive:    true,
+		IsActive:    &active,
 	}
 
 	userID, err := us.userRepo.CreateUser(user)
@@ -127,18 +128,19 @@ func (us *userService) CreateUser(userDto dto.UserRequestDto) *response.ServiceR
 	return response.NewServiceResult(userID)
 }
 
-func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *response.ServiceResult {
+func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto, userRole string, userID uint) *response.ServiceResult {
 
 	existingUser := us.userRepo.GetUserByID(id)
 	if existingUser == nil {
 		return response.NewServiceErrorWithCode(404, response.ErrCodeUserNotFound)
 	}
 
+	if userRole != "ADMIN" && userID != id {
+		return response.NewServiceErrorWithCode(403, response.ErrCodeUserPermissionDenied)
+	}
+
 	updateUser := &model.User{}
 
-	if updateDto.Username != "" {
-		updateUser.Username = updateDto.Username
-	}
 	if updateDto.FullName != "" {
 		updateUser.FullName = updateDto.FullName
 	}
@@ -155,7 +157,7 @@ func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *
 		updateUser.SystemRole = updateDto.SystemRole
 	}
 	if updateDto.IsActive != nil {
-		updateUser.IsActive = *updateDto.IsActive
+		updateUser.IsActive = updateDto.IsActive
 	}
 
 	if updateDto.Password != "" {
@@ -180,7 +182,7 @@ func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto) *
 		Gender:      updatedUser.Gender,
 		Address:     updatedUser.Address,
 		SystemRole:  updatedUser.SystemRole,
-		IsActive:    updatedUser.IsActive,
+		IsActive:    *updatedUser.IsActive,
 		CreatedAt:   updatedUser.CreatedAt,
 		UpdatedAt:   updatedUser.UpdatedAt,
 	}
@@ -192,6 +194,10 @@ func (us *userService) Login(username string, password string) *response.Service
 	user := us.userRepo.GetUserByUsername(username)
 	if user == nil {
 		return response.NewServiceErrorWithCode(401, response.ErrCodeInvalidLogin)
+	}
+
+	if user.IsActive != nil && !*user.IsActive {
+		return response.NewServiceErrorWithCode(403, response.ErrCodeAccountLock)
 	}
 
 	// Compare password hash

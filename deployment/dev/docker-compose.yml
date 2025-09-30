@@ -12,6 +12,7 @@ services:
     environment:
       - SERVER_PORT=8000
       - SERVER_MODE=dev
+      - SYSTEM_DEFAULT_PASSWORD=Rsc@12345
       - MYSQL_HOST=127.0.0.1
       - MYSQL_PORT=33306
       - MYSQL_USERNAME=admin

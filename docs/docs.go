@@ -2394,6 +2394,9 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
+                "full_name": {
+                    "type": "string"
+                },
                 "system_role": {
                     "type": "string",
                     "enum": [
@@ -2872,9 +2875,6 @@ const docTemplate = `{
                         "USER",
                         "SUPER_ADMIN"
                     ]
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         },

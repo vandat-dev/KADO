@@ -62,6 +62,8 @@ definitions:
     properties:
       email:
         type: string
+      full_name:
+        type: string
       system_role:
         enum:
         - ADMIN
@@ -385,8 +387,6 @@ definitions:
         - ADMIN
         - USER
         - SUPER_ADMIN
-        type: string
-      username:
         type: string
     type: object
   model.UserInformation:

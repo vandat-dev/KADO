@@ -16,11 +16,11 @@ type UserRequestDto struct {
 type CreateUserDto struct {
 	Email      string `json:"email" binding:"required,email"`
 	Username   string `json:"username" binding:"required"`
+	FullName   string `json:"full_name"`
 	SystemRole string `json:"system_role" binding:"required,oneof=ADMIN USER SUPER_ADMIN"`
 }
 
 type UserUpdateRequestDto struct {
-	Username    string `json:"username"`
 	FullName    string `json:"full_name"`
 	Password    string `json:"password" binding:"omitempty,min=6"`
 	PhoneNumber string `json:"phone_number"`

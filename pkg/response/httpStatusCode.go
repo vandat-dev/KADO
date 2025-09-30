@@ -1,16 +1,18 @@
 package response
 
 const (
-	ErrCodeSuccess       = 2001  //Success
-	ErrCodeInvalidParams = 2002  //Email invalid
-	ErrInvalidToken      = 3001  //Token invalid
-	ErrCodeUserHasExists = 50001 // User already exist
-	ErrCodeUserNotFound  = 4000  // User not found
-	ErrCodeInvalidLogin  = 4001  // Invalid login credentials
-	ErrCodeAccessDenied  = 4003  // Access denied
-	ErrCodeInternalError = 5000  // Internal server error
-	ErrCodeInvalidData   = 4221  // Invalid request data
-	ErrCodeUnauthorized  = 4010  // Unauthorized
+	ErrCodeSuccess              = 2001  //Success
+	ErrCodeInvalidParams        = 2002  //Email invalid
+	ErrInvalidToken             = 3001  //Token invalid
+	ErrCodeUserHasExists        = 50001 // User already exist
+	ErrCodeUserNotFound         = 4000  // User not found
+	ErrCodeInvalidLogin         = 4001  // Invalid login credentials
+	ErrCodeAccessDenied         = 4003  // Access denied
+	ErrCodeAccountLock          = 4004  // Your account has been locked
+	ErrCodeUserPermissionDenied = 4005  // You do not have permission to interact with this user
+	ErrCodeInternalError        = 5000  // Internal server error
+	ErrCodeInvalidData          = 4221  // Invalid request data
+	ErrCodeUnauthorized         = 4010  // Unauthorized
 
 	// task
 	ErrCodeTaskExists           = 50101 // Task already exists
@@ -46,9 +48,11 @@ var (
 		ErrCodeUnauthorized:  "Unauthorized",
 
 		//	user
-		ErrCodeInvalidParams: "Email invalid",
-		ErrCodeUserHasExists: "User already exist",
-		ErrCodeUserNotFound:  "User not found",
+		ErrCodeInvalidParams:        "Email invalid",
+		ErrCodeUserHasExists:        "User already exist",
+		ErrCodeUserNotFound:         "User not found",
+		ErrCodeAccountLock:          "Your account has been locked",
+		ErrCodeUserPermissionDenied: "You do not have permission to interact with this user",
 
 		//	task
 		ErrCodeTaskNotFound:         "Task not found",
