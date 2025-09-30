@@ -55,9 +55,11 @@ type UserResponseBaseDto struct {
 
 // UserListRequestDto for pagination and filtering
 type UserListRequestDto struct {
-	Skip  int    `form:"skip" binding:"min=0"`
-	Limit int    `form:"limit" binding:"min=0,max=100"`
-	Email string `form:"email"`
+	Skip       int    `form:"skip" binding:"min=0"`
+	Limit      int    `form:"limit" binding:"min=0,max=100"`
+	Email      string `form:"email"`
+	Username   string `form:"username"`
+	SystemRole string `form:"system_role" binding:"omitempty,oneof=ADMIN USER SUPER_ADMIN"`
 }
 
 // UserListResponseDto for paginated user list response

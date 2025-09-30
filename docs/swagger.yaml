@@ -1622,6 +1622,18 @@ paths:
         in: query
         name: email
         type: string
+      - description: Username
+        in: query
+        name: username
+        type: string
+      - description: Status filter
+        enum:
+        - ADMIN
+        - USER
+        - SUPER_ADMIN
+        in: query
+        name: system_role
+        type: string
       produces:
       - application/json
       responses:

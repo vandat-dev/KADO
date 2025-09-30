@@ -2011,6 +2011,23 @@ const docTemplate = `{
                         "description": "Email",
                         "name": "email",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "username",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ADMIN",
+                            "USER",
+                            "SUPER_ADMIN"
+                        ],
+                        "type": "string",
+                        "description": "Status filter",
+                        "name": "system_role",
+                        "in": "query"
                     }
                 ],
                 "responses": {

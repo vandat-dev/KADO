@@ -97,6 +97,8 @@ func (uc *UserController) GetUserByID(c *gin.Context) {
 // @Param skip query int false "Skip" default(0)
 // @Param limit query int false "Limit" default(10)
 // @Param email query string false "Email"
+// @Param username query string false "Username"
+// @Param system_role query string false "Status filter" Enums(ADMIN, USER, SUPER_ADMIN)
 // @Success 200 {object} response.Response{data=dto.UserListResponseDto} "Paginated list of users"
 // @Failure 400 {object} response.Response "Invalid query parameters"
 // @Failure 401 {object} response.Response "Unauthorized"

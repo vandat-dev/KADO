@@ -62,6 +62,14 @@ func (r *userRepository) GetListUser(req dto.UserListRequestDto) ([]*model.User,
 		query = query.Where("email ILIKE ?", "%"+req.Email+"%")
 	}
 
+	if req.Username != "" {
+		query = query.Where("username", req.Username)
+	}
+
+	if req.SystemRole != "" {
+		query = query.Where("system_role", req.SystemRole)
+	}
+
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
