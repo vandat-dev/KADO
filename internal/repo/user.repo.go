@@ -73,10 +73,12 @@ func (r *userRepository) GetListUser(req dto.UserListRequestDto) ([]*model.User,
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	if err := query.Offset(req.Skip).Limit(req.Limit).Find(&users).Error; err != nil {
+
+	query = query.Limit(req.Limit).Offset(req.Skip).Order("created_at DESC")
+
+	if err := query.Find(&users).Error; err != nil {
 		return nil, 0, err
 	}
-
 	return users, total, nil
 }
 
