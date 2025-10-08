@@ -2,6 +2,7 @@ package service
 
 import (
 	"base_go_be/global"
+	"base_go_be/internal/constants"
 	"base_go_be/internal/dto"
 	"base_go_be/internal/model"
 	"base_go_be/internal/repo"
@@ -51,7 +52,7 @@ func (us *userService) GetUserByID(id uint) *response.ServiceResult {
 
 func (us *userService) GetListUser(req dto.UserListRequestDto, userRole string) *response.ServiceResult {
 	// Check authorization - only ADMIN can get user list
-	if userRole != "ADMIN" {
+	if userRole != constants.Admin {
 		return response.NewServiceErrorWithCode(403, response.ErrCodeAccessDenied)
 	}
 
@@ -135,11 +136,18 @@ func (us *userService) UpdateUser(id uint, updateDto dto.UserUpdateRequestDto, u
 		return response.NewServiceErrorWithCode(404, response.ErrCodeUserNotFound)
 	}
 
-	if userRole != "ADMIN" && userID != id {
+	if userRole != constants.Admin && userID != id {
 		return response.NewServiceErrorWithCode(403, response.ErrCodeUserPermissionDenied)
 	}
 
 	updateUser := &model.User{}
+	if updateDto.Email != "" {
+		existingEmail := us.userRepo.GetUserByEmail(updateDto.Email)
+		if existingEmail != nil {
+			return response.NewServiceErrorWithCode(409, response.ErrCodeUserHasExists)
+		}
+		updateUser.Email = updateDto.Email
+	}
 
 	if updateDto.FullName != "" {
 		updateUser.FullName = updateDto.FullName

@@ -2869,6 +2869,9 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "full_name": {
                     "type": "string"
                 },

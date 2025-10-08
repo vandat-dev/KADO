@@ -22,6 +22,7 @@ type CreateUserDto struct {
 
 type UserUpdateRequestDto struct {
 	FullName    string `json:"full_name"`
+	Email       string `json:"email"`
 	Password    string `json:"password" binding:"omitempty,min=6"`
 	PhoneNumber string `json:"phone_number"`
 	Gender      string `json:"gender"`
