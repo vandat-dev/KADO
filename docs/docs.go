@@ -1475,6 +1475,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/task/export": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Export all tasks to an Excel file",
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Export all tasks",
+                "responses": {
+                    "200": {
+                        "description": "Excel file containing tasks",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/task/list": {
             "get": {
                 "security": [

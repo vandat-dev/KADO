@@ -21,6 +21,7 @@ func (tr *TaskRouter) InitTaskRouter(Router *gin.RouterGroup) {
 		taskRouterPrivate.GET("/list", taskController.GetListTask)
 		taskRouterPrivate.GET("/my_tasks", taskController.GetMyTasks)
 		taskRouterPrivate.POST("/create", taskController.CreateTask)
+		taskRouterPrivate.GET("/export", taskController.ExportTasks)
 		taskRouterPrivate.PUT("/update/:id", taskController.UpdateTask)
 		taskRouterPrivate.PUT("/update_progress/:id", taskController.UpdateProgressTask)
 		taskRouterPrivate.DELETE("/delete/:id", taskController.DeleteTask)

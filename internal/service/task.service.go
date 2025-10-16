@@ -7,9 +7,11 @@ import (
 	"base_go_be/internal/model"
 	"base_go_be/internal/repo"
 	"base_go_be/pkg/response"
+	"bytes"
 	"fmt"
 	"time"
 
+	"github.com/xuri/excelize/v2"
 	"go.uber.org/zap"
 )
 
@@ -42,7 +44,8 @@ type ITaskService interface {
 	GetListTask(req dto.TaskListRequestDto, userRole string) *response.ServiceResult
 	GetTasksByUserID(req dto.MyTaskRequestDto, userID uint) *response.ServiceResult
 	CreateTask(taskRequest *dto.CreateTaskDto, userID uint) *response.ServiceResult
-	UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userID uint) *response.ServiceResult
+	ExportTasks() *response.ServiceResult
+	UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userID uint, userSystemRole string) *response.ServiceResult
 	UpdateProgressTask(id uint, taskRequest *dto.TaskProcessDto, userID uint) *response.ServiceResult
 	DeleteTask(id uint, userID uint) *response.ServiceResult
 }
@@ -138,7 +141,60 @@ func (ts *TaskService) CreateTask(taskRequest *dto.CreateTaskDto, userID uint) *
 	return response.NewServiceResult(createdTask.ID)
 }
 
-func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userID uint) *response.ServiceResult {
+func (ts *TaskService) ExportTasks() *response.ServiceResult {
+	// --- Dữ liệu giả ---
+	tasks := []struct {
+		ID        int
+		User      string
+		Client    string
+		Job       string
+		Role      string
+		Note      string
+		WorkTime  int
+		Status    string
+		CreatedAt time.Time
+	}{
+		{1, "Dat", "Client A", "Backend API", "DEV", "Implement feature A", 120, "OPEN", time.Now()},
+		{2, "Minh", "Client B", "Frontend UI", "DEV", "Fix bug login", 90, "DONE", time.Now()},
+		{3, "Khoa", "Client C", "Data ETL", "ADMIN", "Optimize ETL job", 150, "IN_PROGRESS", time.Now()},
+	}
+
+	// --- Tạo Excel ---
+	f := excelize.NewFile()
+	sheet := "Tasks"
+	f.SetSheetName("Sheet1", sheet)
+
+	headers := []string{"ID", "User", "Client", "Job", "Role", "Note", "WorkTime", "Status", "CreatedAt"}
+	for i, h := range headers {
+		cell := fmt.Sprintf("%c1", 'A'+i)
+		f.SetCellValue(sheet, cell, h)
+	}
+
+	for i, t := range tasks {
+		row := i + 2
+		f.SetCellValue(sheet, fmt.Sprintf("A%d", row), t.ID)
+		f.SetCellValue(sheet, fmt.Sprintf("B%d", row), t.User)
+		f.SetCellValue(sheet, fmt.Sprintf("C%d", row), t.Client)
+		f.SetCellValue(sheet, fmt.Sprintf("D%d", row), t.Job)
+		f.SetCellValue(sheet, fmt.Sprintf("E%d", row), t.Role)
+		f.SetCellValue(sheet, fmt.Sprintf("F%d", row), t.Note)
+		f.SetCellValue(sheet, fmt.Sprintf("G%d", row), t.WorkTime)
+		f.SetCellValue(sheet, fmt.Sprintf("H%d", row), t.Status)
+		f.SetCellValue(sheet, fmt.Sprintf("I%d", row), t.CreatedAt.Format("2006-01-02 15:04:05"))
+	}
+
+	var buf bytes.Buffer
+	if err := f.Write(&buf); err != nil {
+		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
+	}
+	data := map[string]interface{}{
+		"filename": "tasks.xlsx",
+		"content":  buf.Bytes(),
+	}
+	return response.NewServiceResult(data)
+}
+
+func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userID uint, userSystemRole string) *response.ServiceResult {
 	// First find the existing task
 	// Example request body:
 	// {
@@ -151,7 +207,7 @@ func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userI
 		return response.NewServiceErrorWithCode(404, response.ErrCodeTaskNotFound)
 	}
 
-	if userID != existingTask.UserID {
+	if userSystemRole != constants.Admin && userID != existingTask.UserID {
 		global.Logger.Info("User does not have permission to interact with this task")
 		return response.NewServiceErrorWithCode(403, response.ErrCodeTaskPermissionDenied)
 	}
@@ -177,7 +233,7 @@ func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userI
 	if taskRequest.Status != "" {
 		existingTask.Status = taskRequest.Status
 	}
-	
+
 	if taskRequest.OT != "" {
 		existingTask.OT = taskRequest.OT
 	}

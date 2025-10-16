@@ -1294,6 +1294,29 @@ paths:
       summary: Get task by ID
       tags:
       - task
+  /task/export:
+    get:
+      description: Export all tasks to an Excel file
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Excel file containing tasks
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Export all tasks
+      tags:
+      - task
   /task/list:
     get:
       consumes:

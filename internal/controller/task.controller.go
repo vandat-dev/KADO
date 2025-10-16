@@ -5,6 +5,7 @@ import (
 	"base_go_be/internal/dto"
 	"base_go_be/internal/service"
 	"base_go_be/pkg/response"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -159,6 +160,8 @@ func (tc *TaskController) CreateTask(c *gin.Context) {
 func (tc *TaskController) UpdateTask(c *gin.Context) {
 	idParam := c.Param("id")
 	userID, _ := c.Get("user_id")
+	userSystemRole, _ := c.Get("system_role")
+
 	idUint64, err := strconv.ParseUint(idParam, 10, 0)
 	id := uint(idUint64)
 	if err != nil {
@@ -172,7 +175,31 @@ func (tc *TaskController) UpdateTask(c *gin.Context) {
 		return
 	}
 
-	result := tc.taskService.UpdateTask(id, &taskRequest, userID.(uint))
+	result := tc.taskService.UpdateTask(id, &taskRequest, userID.(uint), userSystemRole.(string))
+	response.HandleServiceResult(c, result)
+}
+
+// ExportTasks godoc
+// @Summary Export all tasks
+// @Description Export all tasks to an Excel file
+// @Tags task
+// @Produce application/octet-stream
+// @Security ApiKeyAuth
+// @Success 200 {file} file "Excel file containing tasks"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /task/export [get]
+func (tc *TaskController) ExportTasks(c *gin.Context) {
+	result := tc.taskService.ExportTasks()
+
+	if data, ok := result.Data.(map[string]interface{}); ok {
+		if content, ok := data["content"].([]byte); ok {
+			filename := data["filename"].(string)
+			c.Header("Content-Disposition", "attachment; filename="+filename)
+			c.Data(http.StatusOK, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", content)
+			return
+		}
+	}
 	response.HandleServiceResult(c, result)
 }
 
