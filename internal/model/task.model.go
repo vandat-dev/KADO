@@ -27,6 +27,7 @@ type Task struct {
 	EndedAt         *time.Time       `gorm:"type:timestamp" json:"ended_at"`
 	WorkTime        int              `gorm:"type:int" json:"work_time"`
 	Minute          int              `gorm:"type:int" json:"minute"`
+	BreakTime       int              `gorm:"type:int" json:"break_time"`
 	Status          string           `gorm:"type:varchar(50)" json:"status"`
 	Delivery        bool             `gorm:"default:false" json:"delivery"`
 	CreatedAt       time.Time        `gorm:"autoCreateTime" json:"created_at"`

@@ -1684,6 +1684,18 @@ const docTemplate = `{
                         "description": "Status filter",
                         "name": "status",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2603,6 +2615,9 @@ const docTemplate = `{
                 "client": {
                     "type": "string"
                 },
+                "end_date": {
+                    "type": "string"
+                },
                 "job": {
                     "type": "string"
                 },
@@ -2614,6 +2629,9 @@ const docTemplate = `{
                 "skip": {
                     "type": "integer",
                     "minimum": 0
+                },
+                "start_date": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string",
@@ -2798,6 +2816,9 @@ const docTemplate = `{
         "dto.UpdateTaskDto": {
             "type": "object",
             "properties": {
+                "break_time": {
+                    "type": "integer"
+                },
                 "client": {
                     "type": "string"
                 },

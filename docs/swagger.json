@@ -1677,6 +1677,18 @@
                         "description": "Status filter",
                         "name": "status",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2596,6 +2608,9 @@
                 "client": {
                     "type": "string"
                 },
+                "end_date": {
+                    "type": "string"
+                },
                 "job": {
                     "type": "string"
                 },
@@ -2607,6 +2622,9 @@
                 "skip": {
                     "type": "integer",
                     "minimum": 0
+                },
+                "start_date": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string",
@@ -2791,6 +2809,9 @@
         "dto.UpdateTaskDto": {
             "type": "object",
             "properties": {
+                "break_time": {
+                    "type": "integer"
+                },
                 "client": {
                     "type": "string"
                 },

@@ -103,6 +103,14 @@ func (tr *TaskRepository) FindByUserID(req dto.MyTaskRequestDto, userID uint) ([
 	if req.Status != "" {
 		query = query.Where("status = ?", req.Status)
 	}
+	
+	if req.StartDate != nil {
+		query = query.Where("created_at >= ?", *req.StartDate)
+	}
+	if req.EndDate != nil {
+		endInclusive := req.EndDate.AddDate(0, 0, 1)
+		query = query.Where("created_at < ?", endInclusive)
+	}
 
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err

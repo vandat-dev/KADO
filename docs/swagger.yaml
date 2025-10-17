@@ -167,6 +167,8 @@ definitions:
     properties:
       client:
         type: string
+      end_date:
+        type: string
       job:
         type: string
       limit:
@@ -176,6 +178,8 @@ definitions:
       skip:
         minimum: 0
         type: integer
+      start_date:
+        type: string
       status:
         enum:
         - OPEN
@@ -299,6 +303,8 @@ definitions:
     type: object
   dto.UpdateTaskDto:
     properties:
+      break_time:
+        type: integer
       client:
         type: string
       custom_created_at:
@@ -1424,6 +1430,14 @@ paths:
         - COMPLETED
         in: query
         name: status
+        type: string
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: end_date
         type: string
       produces:
       - application/json

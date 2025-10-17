@@ -46,6 +46,7 @@ type UpdateTaskDto struct {
 	EndedAt         *time.Time             `json:"ended_at"`
 	WorkTime        *int                   `json:"work_time"`
 	Minute          *int                   `json:"minute"`
+	BreakTime       *int                   `json:"break_time"`
 	Status          string                 `json:"status" binding:"omitempty,oneof=OPEN IN_PROGRESS PENDING COMPLETED"`
 	CustomCreatedAt *time.Time             `json:"custom_created_at"`
 }
@@ -84,11 +85,13 @@ type TaskListRequestDto struct {
 }
 
 type MyTaskRequestDto struct {
-	Skip   int    `form:"skip" binding:"min=0"`
-	Limit  int    `form:"limit" binding:"min=0,max=100"`
-	Client string `form:"client"`
-	Job    string `form:"job"`
-	Status string `form:"status" binding:"omitempty,oneof=OPEN IN_PROGRESS PENDING COMPLETED"`
+	Skip      int        `form:"skip" binding:"min=0"`
+	Limit     int        `form:"limit" binding:"min=0,max=100"`
+	Client    string     `form:"client"`
+	Job       string     `form:"job"`
+	Status    string     `form:"status" binding:"omitempty,oneof=OPEN IN_PROGRESS PENDING COMPLETED"`
+	StartDate *time.Time `form:"start_date" time_format:"2006-01-02" time_utc:"true"`
+	EndDate   *time.Time `form:"end_date"   time_format:"2006-01-02" time_utc:"true"`
 }
 
 type TaskProcessDto struct {

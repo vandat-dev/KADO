@@ -188,7 +188,7 @@ func (ts *TaskService) ExportTasks() *response.ServiceResult {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
 	data := map[string]interface{}{
-		"filename": "tasks.xlsx",
+		"filename": "timesheet.xlsx",
 		"content":  buf.Bytes(),
 	}
 	return response.NewServiceResult(data)
@@ -252,7 +252,9 @@ func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userI
 	if taskRequest.Minute != nil {
 		existingTask.Minute = *taskRequest.Minute
 	}
-
+	if taskRequest.BreakTime != nil {
+		existingTask.BreakTime = *taskRequest.BreakTime
+	}
 	if taskRequest.CustomCreatedAt != nil {
 		existingTask.CustomCreatedAt = taskRequest.CustomCreatedAt
 	}

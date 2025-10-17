@@ -93,6 +93,8 @@ func (tc *TaskController) GetListTask(c *gin.Context) {
 // @Param client query string false "Client filter"
 // @Param job query string false "Job filter"
 // @Param status query string false "Status filter" Enums(OPEN, IN_PROGRESS, PENDING, COMPLETED)
+// @Param start_date query string false "Start date (YYYY-MM-DD)"
+// @Param end_date query string false "End date (YYYY-MM-DD)"
 // @Failure 401 {object} response.Response "Unauthorized"
 // @Success 200 {object} response.Response{data=dto.MyTaskRequestDto} "Paginated list of my tasks"
 // @Failure 500 {object} response.Response "Internal server error"
