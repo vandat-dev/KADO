@@ -301,6 +301,43 @@ definitions:
       work_time:
         type: integer
     type: object
+  dto.TaskStatisticSummaryDto:
+    properties:
+      break_time:
+        type: integer
+      client:
+        type: string
+      date:
+        type: string
+      ended_at:
+        type: string
+      full_name:
+        type: string
+      hour:
+        type: string
+      item:
+        type: string
+      job:
+        type: string
+      minute:
+        type: integer
+      month:
+        type: string
+      note:
+        type: string
+      ot:
+        type: string
+      role:
+        type: string
+      started_at:
+        type: string
+      total_time:
+        type: integer
+      username:
+        type: string
+      volume:
+        type: integer
+    type: object
   dto.UpdateTaskDto:
     properties:
       break_time:
@@ -402,6 +439,8 @@ definitions:
       avatar:
         type: string
       email:
+        type: string
+      full_name:
         type: string
       id:
         type: integer
@@ -1303,6 +1342,27 @@ paths:
   /task/export:
     get:
       description: Export all tasks to an Excel file
+      parameters:
+      - description: UserID
+        in: query
+        name: user_id
+        type: integer
+      - description: TypeExport
+        enum:
+        - SUMMARY
+        - PROJECT_TOTAL
+        - TIME_TOTAL
+        in: query
+        name: type_export
+        type: string
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -1462,6 +1522,62 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get current user's tasks
+      tags:
+      - task
+  /task/statistic:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of tasks with filtering options. Only admin
+        users can access this endpoint without user filter.
+      parameters:
+      - description: UserID
+        in: query
+        name: user_id
+        type: integer
+      - description: TypeExport
+        enum:
+        - SUMMARY
+        - PROJECT_TOTAL
+        - TIME_TOTAL
+        in: query
+        name: type_export
+        type: string
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paginated list of tasks
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.TaskStatisticSummaryDto'
+              type: object
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: 'Access denied: Only admin can view all tasks'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of tasks with pagination and filtering
       tags:
       - task
   /task/update/{id}:

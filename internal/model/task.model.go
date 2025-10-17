@@ -8,6 +8,7 @@ import (
 type UserInformation struct {
 	ID       uint   `json:"id"`
 	Username string `json:"username"`
+	FullName string `json:"full_name"`
 	Avatar   string `json:"avatar"`
 	Email    string `json:"email"`
 }

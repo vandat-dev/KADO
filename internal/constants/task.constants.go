@@ -8,3 +8,9 @@ const (
 	TaskStatusCompleted  = "COMPLETED"
 )
 
+// TaskDefaultLimit Task Export Type Constants
+const (
+	TaskExportSummary       = "SUMMARY"
+	TaskExportProjectTotals = "PROJECT_TOTAL"
+	TaskExportTimeTotals    = "TIME_TOTAL"
+)

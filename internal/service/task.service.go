@@ -6,45 +6,22 @@ import (
 	"base_go_be/internal/dto"
 	"base_go_be/internal/model"
 	"base_go_be/internal/repo"
+	"base_go_be/internal/until"
 	"base_go_be/pkg/response"
 	"bytes"
 	"fmt"
 	"time"
 
-	"github.com/xuri/excelize/v2"
 	"go.uber.org/zap"
 )
-
-// Helper function to convert model.Task to dto.TaskResponseDto
-func (ts *TaskService) modelToResponseDto(task *model.Task) *dto.TaskResponseDto {
-	return &dto.TaskResponseDto{
-		ID:              task.ID,
-		UserID:          task.UserID,
-		UserInformation: task.UserInformation,
-		Client:          task.Client,
-		Job:             task.Job,
-		Item:            task.Item,
-		Role:            task.Role,
-		Note:            task.Note,
-		OT:              task.OT,
-		Volume:          task.Volume,
-		StartedAt:       task.StartedAt,
-		EndedAt:         task.EndedAt,
-		WorkTime:        task.WorkTime,
-		Status:          task.Status,
-		Delivery:        task.Delivery,
-		CreatedAt:       task.CreatedAt,
-		CustomCreatedAt: task.CustomCreatedAt,
-		UpdatedAt:       task.UpdatedAt,
-	}
-}
 
 type ITaskService interface {
 	GetTaskByID(id uint) *response.ServiceResult
 	GetListTask(req dto.TaskListRequestDto, userRole string) *response.ServiceResult
+	GetStatisticTask(req dto.TaskStatisticRequestDto) *response.ServiceResult
 	GetTasksByUserID(req dto.MyTaskRequestDto, userID uint) *response.ServiceResult
 	CreateTask(taskRequest *dto.CreateTaskDto, userID uint) *response.ServiceResult
-	ExportTasks() *response.ServiceResult
+	ExportTasks(req dto.TaskStatisticRequestDto) *response.ServiceResult
 	UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userID uint, userSystemRole string) *response.ServiceResult
 	UpdateProgressTask(id uint, taskRequest *dto.TaskProcessDto, userID uint) *response.ServiceResult
 	DeleteTask(id uint, userID uint) *response.ServiceResult
@@ -83,22 +60,27 @@ func (ts *TaskService) GetListTask(req dto.TaskListRequestDto, userRole string) 
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
 
-	// Convert to DTOs
-	//taskResponse := make([]dto.TaskResponseDto, len(tasks))
-	//for i, task := range tasks {
-	//	taskResponse[i] = *ts.modelToResponseDto(&task)
-	//}
-
 	result := map[string]interface{}{
 		"total": total,
 		"data":  tasks,
 	}
-
-	//result := &dto.TaskListResponseDto{
-	//	Data:  taskResponse,
-	//	Total: total,
-	//}
 	return response.NewServiceResult(result)
+}
+
+func (ts *TaskService) GetStatisticTask(req dto.TaskStatisticRequestDto) *response.ServiceResult {
+	tasks, err := ts.taskRepo.GetListStatisticTask(req)
+	if err != nil {
+		global.Logger.Error("Failed to get tasks from repository: " + err.Error())
+		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
+	}
+
+	taskResponse, errHandle := ts.ResponseDataTaskExport(req, tasks)
+	if errHandle != nil {
+		global.Logger.Error("Invalid export type: " + errHandle.Error())
+		return response.NewServiceErrorWithCode(400, response.ErrCodeInvalidData)
+	}
+
+	return response.NewServiceResult(taskResponse)
 }
 
 func (ts *TaskService) GetTasksByUserID(req dto.MyTaskRequestDto, userID uint) *response.ServiceResult {
@@ -141,57 +123,73 @@ func (ts *TaskService) CreateTask(taskRequest *dto.CreateTaskDto, userID uint) *
 	return response.NewServiceResult(createdTask.ID)
 }
 
-func (ts *TaskService) ExportTasks() *response.ServiceResult {
-	// --- Dữ liệu giả ---
-	tasks := []struct {
-		ID        int
-		User      string
-		Client    string
-		Job       string
-		Role      string
-		Note      string
-		WorkTime  int
-		Status    string
-		CreatedAt time.Time
-	}{
-		{1, "Dat", "Client A", "Backend API", "DEV", "Implement feature A", 120, "OPEN", time.Now()},
-		{2, "Minh", "Client B", "Frontend UI", "DEV", "Fix bug login", 90, "DONE", time.Now()},
-		{3, "Khoa", "Client C", "Data ETL", "ADMIN", "Optimize ETL job", 150, "IN_PROGRESS", time.Now()},
-	}
+func (ts *TaskService) ExportTasks(req dto.TaskStatisticRequestDto) *response.ServiceResult {
 
-	// --- Tạo Excel ---
-	f := excelize.NewFile()
-	sheet := "Tasks"
-	f.SetSheetName("Sheet1", sheet)
-
-	headers := []string{"ID", "User", "Client", "Job", "Role", "Note", "WorkTime", "Status", "CreatedAt"}
-	for i, h := range headers {
-		cell := fmt.Sprintf("%c1", 'A'+i)
-		f.SetCellValue(sheet, cell, h)
-	}
-
-	for i, t := range tasks {
-		row := i + 2
-		f.SetCellValue(sheet, fmt.Sprintf("A%d", row), t.ID)
-		f.SetCellValue(sheet, fmt.Sprintf("B%d", row), t.User)
-		f.SetCellValue(sheet, fmt.Sprintf("C%d", row), t.Client)
-		f.SetCellValue(sheet, fmt.Sprintf("D%d", row), t.Job)
-		f.SetCellValue(sheet, fmt.Sprintf("E%d", row), t.Role)
-		f.SetCellValue(sheet, fmt.Sprintf("F%d", row), t.Note)
-		f.SetCellValue(sheet, fmt.Sprintf("G%d", row), t.WorkTime)
-		f.SetCellValue(sheet, fmt.Sprintf("H%d", row), t.Status)
-		f.SetCellValue(sheet, fmt.Sprintf("I%d", row), t.CreatedAt.Format("2006-01-02 15:04:05"))
-	}
-
-	var buf bytes.Buffer
-	if err := f.Write(&buf); err != nil {
+	tasks, err := ts.taskRepo.GetListStatisticTask(req)
+	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
 	}
+	resp, err := ts.ResponseDataTaskExport(req, tasks)
+	if err != nil {
+		return response.NewServiceErrorWithCode(400, response.ErrCodeInvalidData)
+	}
+
+	// --- Handle Excel ---
+	buf, err := ts.ProcessExportTasks(req, resp)
+	if err != nil {
+		return response.NewServiceErrorWithCode(400, response.ErrCodeTaskExportFailed)
+	}
+
 	data := map[string]interface{}{
 		"filename": "timesheet.xlsx",
 		"content":  buf.Bytes(),
 	}
 	return response.NewServiceResult(data)
+}
+
+func (ts *TaskService) ResponseDataTaskExport(req dto.TaskStatisticRequestDto, tasks []model.Task) ([]map[string]interface{}, error) {
+	if req.StartDate == nil || req.EndDate == nil {
+		return nil, fmt.Errorf("start_date and end_date are required")
+	}
+	switch req.TypeExport {
+	case constants.TaskExportSummary:
+		taskSummaries := ts.summaryTask(tasks)
+		return taskSummaries, nil
+
+	case constants.TaskExportProjectTotals:
+		taskSummaries := ts.analysisTasksByType(tasks, req.StartDate, req.EndDate, constants.TaskExportProjectTotals)
+		return taskSummaries, nil
+
+	case constants.TaskExportTimeTotals:
+		taskSummaries := ts.analysisTasksByType(tasks, req.StartDate, req.EndDate, constants.TaskExportTimeTotals)
+		return taskSummaries, nil
+
+	default:
+		return nil, fmt.Errorf("invalid TypeExport value: %s", req.TypeExport)
+	}
+
+}
+
+func (ts *TaskService) ProcessExportTasks(req dto.TaskStatisticRequestDto, resp []map[string]interface{}) (*bytes.Buffer, error) {
+	switch req.TypeExport {
+	case constants.TaskExportSummary:
+		headers := until.GetHeaderSummary()
+		buf, err := exportExcelSummary(resp, headers)
+		return buf, err
+
+	case constants.TaskExportProjectTotals:
+		headers := until.GetDateRange(req.StartDate, req.EndDate)
+		buf, err := exportExcelJob(resp, headers)
+		return buf, err
+
+	case constants.TaskExportTimeTotals:
+		headers := until.GetDateRange(req.StartDate, req.EndDate)
+		buf, err := exportExcelTimeTotal(resp, headers)
+		return buf, err
+
+	default:
+		return nil, fmt.Errorf("failed export process: %s", req.TypeExport)
+	}
 }
 
 func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userID uint, userSystemRole string) *response.ServiceResult {

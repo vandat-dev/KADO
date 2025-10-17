@@ -18,6 +18,7 @@ const (
 	ErrCodeTaskExists           = 50101 // Task already exists
 	ErrCodeTaskNotFound         = 4100  // Task not found
 	ErrCodeTaskPermissionDenied = 40301 // You do not have permission to interact with this event
+	ErrCodeTaskExportFailed     = 40302 // Failed to export tasks
 
 	// client
 	ErrCodeClientNotFound = 4200  // Client not found
@@ -58,6 +59,7 @@ var (
 		ErrCodeTaskNotFound:         "TASK_NOT_FOUND",
 		ErrCodeTaskExists:           "TASK_ALREADY_EXISTS",
 		ErrCodeTaskPermissionDenied: "YOU_DO_NOT_HAVE_PERMISSION_TO_INTERACT_WITH_THIS_TASK",
+		ErrCodeTaskExportFailed:     "FAILED_TO_EXPORT_TASKS",
 
 		//	client
 		ErrCodeClientNotFound: "CLIENT_NOT_FOUND",

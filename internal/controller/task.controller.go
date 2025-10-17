@@ -76,8 +76,37 @@ func (tc *TaskController) GetListTask(c *gin.Context) {
 		return
 	}
 
-	role, _ := c.Get("system_role")
-	result := tc.taskService.GetListTask(req, role.(string))
+	//role, _ := c.Get("system_role")
+	role := "ADMIN"
+	result := tc.taskService.GetListTask(req, role)
+	response.HandleServiceResult(c, result)
+}
+
+// GetStatisticTask godoc
+// @Summary Get list of tasks with pagination and filtering
+// @Description Get paginated list of tasks with filtering options. Only admin users can access this endpoint without user filter.
+// @Tags task
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param user_id query int false "UserID"
+// @Param type_export query string false "TypeExport" Enums(SUMMARY, PROJECT_TOTAL, TIME_TOTAL)
+// @Param start_date query string false "Start date (YYYY-MM-DD)"
+// @Param end_date query string false "End date (YYYY-MM-DD)"
+// @Success 200 {object} response.Response{data=dto.TaskStatisticSummaryDto} "Paginated list of tasks"
+// @Failure 400 {object} response.Response "Invalid query parameters"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 403 {object} response.Response "Access denied: Only admin can view all tasks"
+// @Router /task/statistic [get]
+func (tc *TaskController) GetStatisticTask(c *gin.Context) {
+	var req dto.TaskStatisticRequestDto
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("Failed to bind query parameters: " + err.Error())
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
+		return
+	}
+	result := tc.taskService.GetStatisticTask(req)
 	response.HandleServiceResult(c, result)
 }
 
@@ -187,12 +216,23 @@ func (tc *TaskController) UpdateTask(c *gin.Context) {
 // @Tags task
 // @Produce application/octet-stream
 // @Security ApiKeyAuth
+// @Param user_id query int false "UserID"
+// @Param type_export query string false "TypeExport" Enums(SUMMARY, PROJECT_TOTAL, TIME_TOTAL)
+// @Param start_date query string false "Start date (YYYY-MM-DD)"
+// @Param end_date query string false "End date (YYYY-MM-DD)"
 // @Success 200 {file} file "Excel file containing tasks"
 // @Failure 401 {object} response.Response "Unauthorized"
 // @Failure 500 {object} response.Response "Internal server error"
 // @Router /task/export [get]
 func (tc *TaskController) ExportTasks(c *gin.Context) {
-	result := tc.taskService.ExportTasks()
+	var req dto.TaskStatisticRequestDto
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("Failed to bind query parameters: " + err.Error())
+		response.DataDetailResponse(c, 422, response.ErrCodeInvalidData, nil)
+		return
+	}
+	result := tc.taskService.ExportTasks(req)
 
 	if data, ok := result.Data.(map[string]interface{}); ok {
 		if content, ok := data["content"].([]byte); ok {

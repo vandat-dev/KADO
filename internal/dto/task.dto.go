@@ -84,6 +84,33 @@ type TaskListRequestDto struct {
 	EndDate   *time.Time `form:"end_date"   time_format:"2006-01-02" time_utc:"true"`
 }
 
+type TaskStatisticRequestDto struct {
+	UserID     uint       `form:"user_id"`
+	TypeExport string     `form:"type_export" binding:"omitempty,oneof=SUMMARY PROJECT_TOTAL TIME_TOTAL"`
+	StartDate  *time.Time `form:"start_date" time_format:"2006-01-02" time_utc:"true"`
+	EndDate    *time.Time `form:"end_date"   time_format:"2006-01-02" time_utc:"true"`
+}
+
+type TaskStatisticSummaryDto struct {
+	Month     string `json:"month"`
+	Date      string `json:"date"`
+	Username  string `json:"username"`
+	FullName  string `json:"full_name"`
+	Client    string `json:"client"`
+	Job       string `json:"job"`
+	Item      string `json:"item"`
+	Role      string `json:"role"`
+	StartedAt string `json:"started_at"`
+	EndedAt   string `json:"ended_at"`
+	Hour      string `json:"hour"`
+	Minute    int    `json:"minute"`
+	BreakTime int    `json:"break_time"`
+	TotalTime int    `json:"total_time"`
+	OT        string `json:"ot"`
+	Volume    int    `json:"volume"`
+	Note      string `json:"note"`
+}
+
 type MyTaskRequestDto struct {
 	Skip      int        `form:"skip" binding:"min=0"`
 	Limit     int        `form:"limit" binding:"min=0,max=100"`

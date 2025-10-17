@@ -1490,6 +1490,37 @@ const docTemplate = `{
                     "task"
                 ],
                 "summary": "Export all tasks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "UserID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "SUMMARY",
+                            "PROJECT_TOTAL",
+                            "TIME_TOTAL"
+                        ],
+                        "type": "string",
+                        "description": "TypeExport",
+                        "name": "type_export",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Excel file containing tasks",
@@ -1725,6 +1756,95 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/statistic": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get paginated list of tasks with filtering options. Only admin users can access this endpoint without user filter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Get list of tasks with pagination and filtering",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "UserID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "SUMMARY",
+                            "PROJECT_TOTAL",
+                            "TIME_TOTAL"
+                        ],
+                        "type": "string",
+                        "description": "TypeExport",
+                        "name": "type_export",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of tasks",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.TaskStatisticSummaryDto"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied: Only admin can view all tasks",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -2813,6 +2933,62 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.TaskStatisticSummaryDto": {
+            "type": "object",
+            "properties": {
+                "break_time": {
+                    "type": "integer"
+                },
+                "client": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "ended_at": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "hour": {
+                    "type": "string"
+                },
+                "item": {
+                    "type": "string"
+                },
+                "job": {
+                    "type": "string"
+                },
+                "minute": {
+                    "type": "integer"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "ot": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "started_at": {
+                    "type": "string"
+                },
+                "total_time": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "volume": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.UpdateTaskDto": {
             "type": "object",
             "properties": {
@@ -2963,6 +3139,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "email": {
+                    "type": "string"
+                },
+                "full_name": {
                     "type": "string"
                 },
                 "id": {

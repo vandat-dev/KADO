@@ -13,6 +13,7 @@ type ITaskRepository interface {
 	FindByID(id uint) (*model.Task, error)
 	FindAll() ([]model.Task, error)
 	GetListTask(req dto.TaskListRequestDto) ([]model.Task, int64, error)
+	GetListStatisticTask(req dto.TaskStatisticRequestDto) ([]model.Task, error)
 	FindByUserID(req dto.MyTaskRequestDto, userID uint) ([]model.Task, int64, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) (*model.Task, error)
@@ -88,6 +89,30 @@ func (tr *TaskRepository) GetListTask(req dto.TaskListRequestDto) ([]model.Task,
 	return tasks, total, nil
 }
 
+func (tr *TaskRepository) GetListStatisticTask(req dto.TaskStatisticRequestDto) ([]model.Task, error) {
+	var tasks []model.Task
+
+	query := tr.db.Model(&model.Task{})
+
+	if req.UserID != 0 {
+		query = query.Where("user_id = ?", req.UserID)
+	}
+
+	if req.StartDate != nil {
+		query = query.Where("created_at >= ?", *req.StartDate)
+	}
+	if req.EndDate != nil {
+		endInclusive := req.EndDate.AddDate(0, 0, 1)
+		query = query.Where("created_at < ?", endInclusive)
+	}
+	query = query.Order("user_id ASC, created_at ASC")
+
+	if err := query.Find(&tasks).Error; err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
 func (tr *TaskRepository) FindByUserID(req dto.MyTaskRequestDto, userID uint) ([]model.Task, int64, error) {
 	var tasks []model.Task
 	var total int64
@@ -103,7 +128,7 @@ func (tr *TaskRepository) FindByUserID(req dto.MyTaskRequestDto, userID uint) ([
 	if req.Status != "" {
 		query = query.Where("status = ?", req.Status)
 	}
-	
+
 	if req.StartDate != nil {
 		query = query.Where("created_at >= ?", *req.StartDate)
 	}
@@ -116,7 +141,14 @@ func (tr *TaskRepository) FindByUserID(req dto.MyTaskRequestDto, userID uint) ([
 		return nil, 0, err
 	}
 
-	query = query.Limit(req.Limit).Offset(req.Skip).Order("created_at DESC")
+	if req.Limit > 0 {
+		query = query.Limit(req.Limit)
+	}
+	if req.Skip > 0 {
+		query = query.Offset(req.Skip)
+	}
+
+	query = query.Order("created_at DESC")
 
 	if err := query.Find(&tasks).Error; err != nil {
 		return nil, 0, err
