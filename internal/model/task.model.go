@@ -23,6 +23,7 @@ type Task struct {
 	Role            string           `gorm:"type:varchar(100)" json:"role"`
 	Note            string           `gorm:"type:text" json:"note"`
 	OT              string           `gorm:"type:varchar(255)" json:"ot"`
+	Hours           string           `gorm:"type:varchar(100)" json:"hours"`
 	Volume          int              `gorm:"type:int" json:"volume"`
 	StartedAt       *time.Time       `gorm:"type:timestamp" json:"started_at"`
 	EndedAt         *time.Time       `gorm:"type:timestamp" json:"ended_at"`

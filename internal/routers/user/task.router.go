@@ -1,6 +1,7 @@
 package user
 
 import (
+	"base_go_be/internal/middlewares"
 	"base_go_be/internal/wire"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ func (tr *TaskRouter) InitTaskRouter(Router *gin.RouterGroup) {
 
 	// private router - authentication required
 	taskRouterPrivate := Router.Group("/task")
-	//taskRouterPrivate.Use(middlewares.AuthMiddleware())
+	taskRouterPrivate.Use(middlewares.AuthMiddleware())
 	{
 		taskRouterPrivate.GET("/detail/:id", taskController.GetTaskByID)
 		taskRouterPrivate.GET("/list", taskController.GetListTask)

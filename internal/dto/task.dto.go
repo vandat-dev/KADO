@@ -41,6 +41,7 @@ type UpdateTaskDto struct {
 	Role            string                 `json:"role"`
 	Note            string                 `json:"note"`
 	OT              string                 `json:"ot"`
+	Hours           string                 `json:"hours"`
 	Volume          *int                   `json:"volume"`
 	StartedAt       *time.Time             `json:"started_at"`
 	EndedAt         *time.Time             `json:"ended_at"`
@@ -61,6 +62,7 @@ type TaskResponseDto struct {
 	Role            string                 `json:"role"`
 	Note            string                 `json:"note"`
 	OT              string                 `json:"ot"`
+	Hours           string                 `json:"hours"`
 	Volume          int                    `json:"volume"`
 	StartedAt       *time.Time             `json:"started_at"`
 	EndedAt         *time.Time             `json:"ended_at"`

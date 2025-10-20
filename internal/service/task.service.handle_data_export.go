@@ -4,7 +4,6 @@ import (
 	"base_go_be/internal/constants"
 	"base_go_be/internal/model"
 	"base_go_be/internal/until"
-	"fmt"
 	"math"
 	"time"
 )
@@ -13,18 +12,23 @@ func (ts *TaskService) summaryTask(tasks []model.Task) []map[string]interface{} 
 	results := make([]map[string]interface{}, 0, len(tasks))
 
 	for _, task := range tasks {
+		var username, fullName string
+		if task.UserInformation != nil {
+			username = task.UserInformation.Username
+			fullName = task.UserInformation.FullName
+		}
 		record := map[string]interface{}{
-			"month":      task.CreatedAt.Format("01"),
-			"date":       task.CreatedAt.Format("2006/01/02"),
-			"username":   task.UserInformation.Username,
-			"full_name":  task.UserInformation.FullName,
+			"month":      task.CustomCreatedAt.Format("01"),
+			"date":       task.CustomCreatedAt.Format("2006/01/02"),
+			"username":   username,
+			"full_name":  fullName,
 			"client":     task.Client,
 			"job":        task.Job,
 			"item":       task.Item,
 			"role":       task.Role,
-			"started_at": until.SafeTime(task.StartedAt),
-			"ended_at":   until.SafeTime(task.EndedAt),
-			"hour":       fmt.Sprintf("%02d:%02d", task.Minute/60, task.Minute%60),
+			"started_at": until.SafeTimeUTC7(task.StartedAt),
+			"ended_at":   until.SafeTimeUTC7(task.EndedAt),
+			"hour":       task.Hours,
 			"minute":     task.Minute,
 			"break_time": task.BreakTime,
 			"total_time": task.WorkTime,

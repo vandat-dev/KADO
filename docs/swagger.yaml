@@ -274,6 +274,8 @@ definitions:
         type: boolean
       ended_at:
         type: string
+      hours:
+        type: string
       id:
         type: integer
       item:
@@ -347,6 +349,8 @@ definitions:
       custom_created_at:
         type: string
       ended_at:
+        type: string
+      hours:
         type: string
       item:
         type: string

@@ -231,9 +231,11 @@ func (ts *TaskService) UpdateTask(id uint, taskRequest *dto.UpdateTaskDto, userI
 	if taskRequest.Status != "" {
 		existingTask.Status = taskRequest.Status
 	}
-
 	if taskRequest.OT != "" {
 		existingTask.OT = taskRequest.OT
+	}
+	if taskRequest.Hours != "" {
+		existingTask.Hours = taskRequest.Hours
 	}
 	if taskRequest.Volume != nil {
 		existingTask.Volume = *taskRequest.Volume

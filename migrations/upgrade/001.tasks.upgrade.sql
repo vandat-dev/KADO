@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     role VARCHAR(100),
     note TEXT,
     ot VARCHAR(255),
+    hours VARCHAR(100),
     volume INT,
     started_at TIMESTAMP,
     ended_at TIMESTAMP,
@@ -23,3 +24,6 @@ CREATE TABLE IF NOT EXISTS tasks (
 
 ALTER TABLE tasks
 ALTER COLUMN id TYPE BIGINT;
+
+ALTER TABLE tasks
+ADD COLUMN hours VARCHAR(100);

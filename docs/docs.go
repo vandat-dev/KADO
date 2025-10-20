@@ -2892,6 +2892,9 @@ const docTemplate = `{
                 "ended_at": {
                     "type": "string"
                 },
+                "hours": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -3002,6 +3005,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ended_at": {
+                    "type": "string"
+                },
+                "hours": {
                     "type": "string"
                 },
                 "item": {
