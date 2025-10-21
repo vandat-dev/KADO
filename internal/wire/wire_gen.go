@@ -52,7 +52,8 @@ func InitRoleRouterHandler() (*controller.RoleController, error) {
 
 func InitTaskRouterHandler() (*controller.TaskController, error) {
 	iTaskRepository := repo.NewTaskRepository()
-	iTaskService := service.NewTaskService(iTaskRepository)
+	iUserRepository := repo.NewUserRepository()
+	iTaskService := service.NewTaskService(iTaskRepository, iUserRepository)
 	taskController := controller.NewTaskController(iTaskService)
 	return taskController, nil
 }

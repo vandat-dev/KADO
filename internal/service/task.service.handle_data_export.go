@@ -65,16 +65,24 @@ func (ts *TaskService) analysisTasksByType(tasks []model.Task, start, end *time.
 		}
 
 	case constants.TaskExportTimeTotals:
-		grouped := ts.groupByUserAndDay(tasks)
-		for user, days := range grouped {
-			record := map[string]interface{}{"full_name": user}
-			total := 0
+		grouped := ts.groupByUserAndDay(tasks)           //minutes
+		groupedHours := ts.groupHoursByUserAndDay(tasks) //hours
+		for name := range grouped {
+			record := map[string]interface{}{"full_name": name}
+
+			totalMin := 0
+			totalHour := 0.0
 			for _, d := range dates {
-				val := days[d]
-				record[d] = val
-				total += val
+				minVal := grouped[name][d]
+				hourVal := groupedHours[name][d]
+
+				record[d] = minVal
+				record[d+"_hours"] = math.Round(hourVal*10) / 10
+				totalMin += minVal
+				totalHour += hourVal
 			}
-			record["average"] = math.Round((float64(total)/float64(dayCount))*10) / 10
+			record["average"] = math.Round((float64(totalMin)/float64(dayCount))*10) / 10
+			record["average_hours"] = math.Round((totalHour/float64(dayCount))*10) / 10
 			result = append(result, record)
 		}
 	}
@@ -115,4 +123,28 @@ func (ts *TaskService) groupByUserAndDay(tasks []model.Task) map[string]map[stri
 		m[name][day] += t.Minute
 	}
 	return m
+}
+
+func (ts *TaskService) groupHoursByUserAndDay(tasks []model.Task) map[string]map[string]float64 {
+	const layout = "2006-01-02"
+	groupedHours := make(map[string]map[string]float64)
+
+	for _, t := range tasks {
+		name := t.UserInformation.FullName
+		if name == "" {
+			name = "(blank)"
+		}
+		if t.StartedAt == nil || t.EndedAt == nil {
+			continue
+		}
+
+		day := t.CreatedAt.Format(layout)
+		hours := t.EndedAt.Sub(*t.StartedAt).Hours()
+
+		if _, ok := groupedHours[name]; !ok {
+			groupedHours[name] = make(map[string]float64)
+		}
+		groupedHours[name][day] += hours
+	}
+	return groupedHours
 }

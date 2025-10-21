@@ -14,10 +14,10 @@ import (
 func InitTaskRouterHandler() (*controller.TaskController, error) {
 	wire.Build(
 		repo.NewTaskRepository,
+		repo.NewUserRepository,
 		service.NewTaskService,
 		controller.NewTaskController,
 	)
 
 	return &controller.TaskController{}, nil
 }
-

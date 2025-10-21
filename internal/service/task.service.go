@@ -29,11 +29,13 @@ type ITaskService interface {
 
 type TaskService struct {
 	taskRepo repo.ITaskRepository
+	userRepo repo.IUserRepository
 }
 
-func NewTaskService(taskRepo repo.ITaskRepository) ITaskService {
+func NewTaskService(taskRepo repo.ITaskRepository, userRepo repo.IUserRepository) ITaskService {
 	return &TaskService{
 		taskRepo: taskRepo,
+		userRepo: userRepo,
 	}
 }
 
@@ -99,7 +101,7 @@ func (ts *TaskService) GetTasksByUserID(req dto.MyTaskRequestDto, userID uint) *
 }
 
 func (ts *TaskService) CreateTask(taskRequest *dto.CreateTaskDto, userID uint) *response.ServiceResult {
-	now := time.Now()
+	now := until.NowUTC()
 	task := &model.Task{
 		UserID:          userID,
 		UserInformation: taskRequest.UserInformation,
@@ -125,6 +127,16 @@ func (ts *TaskService) CreateTask(taskRequest *dto.CreateTaskDto, userID uint) *
 
 func (ts *TaskService) ExportTasks(req dto.TaskStatisticRequestDto) *response.ServiceResult {
 
+	var fullName string
+	if req.UserID != 0 {
+		id := req.UserID
+		existingUser := ts.userRepo.GetUserByID(id)
+		if existingUser == nil {
+			return response.NewServiceErrorWithCode(404, response.ErrCodeUserNotFound)
+		}
+		fullName = existingUser.FullName
+	}
+
 	tasks, err := ts.taskRepo.GetListStatisticTask(req)
 	if err != nil {
 		return response.NewServiceErrorWithCode(500, response.ErrCodeInternalError)
@@ -135,7 +147,7 @@ func (ts *TaskService) ExportTasks(req dto.TaskStatisticRequestDto) *response.Se
 	}
 
 	// --- Handle Excel ---
-	buf, err := ts.ProcessExportTasks(req, resp)
+	buf, err := ts.ProcessExportTasks(req, resp, fullName)
 	if err != nil {
 		return response.NewServiceErrorWithCode(400, response.ErrCodeTaskExportFailed)
 	}
@@ -170,7 +182,7 @@ func (ts *TaskService) ResponseDataTaskExport(req dto.TaskStatisticRequestDto, t
 
 }
 
-func (ts *TaskService) ProcessExportTasks(req dto.TaskStatisticRequestDto, resp []map[string]interface{}) (*bytes.Buffer, error) {
+func (ts *TaskService) ProcessExportTasks(req dto.TaskStatisticRequestDto, resp []map[string]interface{}, fullName string) (*bytes.Buffer, error) {
 	switch req.TypeExport {
 	case constants.TaskExportSummary:
 		headers := until.GetHeaderSummary()
@@ -179,7 +191,7 @@ func (ts *TaskService) ProcessExportTasks(req dto.TaskStatisticRequestDto, resp 
 
 	case constants.TaskExportProjectTotals:
 		headers := until.GetDateRange(req.StartDate, req.EndDate)
-		buf, err := exportExcelJob(resp, headers)
+		buf, err := exportExcelJob(resp, headers, fullName)
 		return buf, err
 
 	case constants.TaskExportTimeTotals:

@@ -2,6 +2,10 @@ package until
 
 import "time"
 
+func NowUTC() time.Time {
+	return time.Now().UTC()
+}
+
 func SafeTime(t *time.Time) string {
 	if t == nil {
 		return ""
